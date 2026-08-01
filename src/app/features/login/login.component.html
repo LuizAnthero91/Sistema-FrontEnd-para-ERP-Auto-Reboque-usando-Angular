@@ -8,7 +8,7 @@
 
     <form [formGroup]="form" (ngSubmit)="entrar()" class="login-form">
       <h2>Entrar no sistema</h2>
-      <p class="muted">Entre com seus usuário e senha.</p>
+      <p class="muted">Entre com seu e-mail e senha.</p>
       <div class="alert error" *ngIf="erro">{{ erro }}</div>
       <div>
         <label>Email</label>
@@ -21,4 +21,9 @@
       <button class="btn btn-primary" type="submit" [disabled]="loading">{{ loading ? 'Entrando...' : 'Entrar' }}</button>
     </form>
   </div>
+
+  <footer class="login-footer">
+    <span>Auto Reboque Torá 2026</span>
+    <span><a href="https://lcdigitaltec.com.br" target="_blank" rel="noopener noreferrer">LCDigitalTec.com.br</a> todos os direitos reservados</span>
+  </footer>
 </section>
