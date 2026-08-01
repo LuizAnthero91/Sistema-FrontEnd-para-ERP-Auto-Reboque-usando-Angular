@@ -1,0 +1,24 @@
+<section class="login-page">
+  <div class="login-card card">
+    <div class="login-hero">
+      <div class="logo">T</div>
+      <h1>ERP Auto Reboque Torá</h1>
+      <p>Controle frota, ordens de serviço, financeiro, abastecimentos, manutenções e documentos em uma única tela.</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="entrar()" class="login-form">
+      <h2>Entrar no sistema</h2>
+      <p class="muted">Use o usuário criado no backend Spring Boot.</p>
+      <div class="alert error" *ngIf="erro">{{ erro }}</div>
+      <div>
+        <label>Email</label>
+        <input class="input" type="email" formControlName="email" placeholder="admin@autoreboquetora.com.br">
+      </div>
+      <div>
+        <label>Senha</label>
+        <input class="input" type="password" formControlName="senha" placeholder="Digite sua senha">
+      </div>
+      <button class="btn btn-primary" type="submit" [disabled]="loading">{{ loading ? 'Entrando...' : 'Entrar' }}</button>
+    </form>
+  </div>
+</section>

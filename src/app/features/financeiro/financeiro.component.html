@@ -1,0 +1,125 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Financeiro</h1>
+      <p class="page-subtitle">Receitas, despesas e resumo por período.</p>
+    </div>
+    <button class="btn btn-primary" (click)="novo()">Novo lançamento</button>
+  </div>
+
+  <div class="alert error" *ngIf="erro">{{ erro }}</div>
+  <div class="alert success" *ngIf="sucesso">{{ sucesso }}</div>
+
+  <div class="card panel">
+    <div class="form-grid">
+      <div>
+        <label>Início</label>
+        <input class="input" type="date" [(ngModel)]="inicio" [ngModelOptions]="{standalone:true}">
+      </div>
+      <div>
+        <label>Fim</label>
+        <input class="input" type="date" [(ngModel)]="fim" [ngModelOptions]="{standalone:true}">
+      </div>
+      <div style="display:flex;align-items:end">
+        <button class="btn btn-secondary" (click)="carregarResumo()">Atualizar resumo</button>
+      </div>
+    </div>
+    <div class="actions" *ngIf="resumo" style="margin-top:14px">
+      <span class="badge success">Receitas {{ resumo.receitas | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+      <span class="badge danger">Despesas {{ resumo.despesas | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+      <span class="badge">Lucro {{ resumo.lucroBruto | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+    </div>
+  </div>
+
+  <form class="card panel" *ngIf="mostrarForm" [formGroup]="form" (ngSubmit)="salvar()">
+    <div class="form-grid">
+      <div>
+        <label>Veículo</label>
+        <select formControlName="veiculoId">
+          <option [ngValue]="null">Opcional</option>
+          <option *ngFor="let v of veiculos" [ngValue]="v.id">{{ v.placa }}</option>
+        </select>
+      </div>
+      <div>
+        <label>OS ID</label>
+        <input class="input" type="number" formControlName="ordemServicoId">
+      </div>
+      <div>
+        <label>Tipo</label>
+        <select formControlName="tipo">
+          <option *ngFor="let o of tipos" [value]="o">{{ label(o) }}</option>
+        </select>
+      </div>
+      <div>
+        <label>Categoria</label>
+        <select formControlName="categoria">
+          <option *ngFor="let o of categorias" [value]="o">{{ label(o) }}</option>
+        </select>
+      </div>
+      <div>
+        <label>Status</label>
+        <select formControlName="status">
+          <option [ngValue]="null">Padrão</option>
+          <option *ngFor="let o of status" [value]="o">{{ label(o) }}</option>
+        </select>
+      </div>
+      <div>
+        <label>Valor</label>
+        <input class="input" type="number" min="0.01" step="0.01" formControlName="valor" [class.invalid]="campoInvalido('valor')">
+        <small class="field-error" *ngIf="campoInvalido('valor')">Informe um valor maior que zero.</small>
+      </div>
+      <div>
+        <label>Data</label>
+        <input class="input" type="date" formControlName="dataLancamento" [class.invalid]="campoInvalido('dataLancamento')">
+        <small class="field-error" *ngIf="campoInvalido('dataLancamento')">Informe a data do lançamento.</small>
+      </div>
+      <div class="span-2">
+        <label>Descrição</label>
+        <input class="input" formControlName="descricao" [class.invalid]="campoInvalido('descricao')" placeholder="Ex.: Frete, serviço de guincho, abastecimento">
+        <small class="field-error" *ngIf="campoInvalido('descricao')">Informe uma descrição ou preencha a observação.</small>
+      </div>
+      <div class="span-3">
+        <label>Observação</label>
+        <input class="input" formControlName="observacao">
+      </div>
+    </div>
+    <div class="actions" style="margin-top:14px">
+      <button class="btn btn-success" type="submit" [disabled]="salvando">{{ salvando ? 'Salvando...' : 'Salvar' }}</button>
+      <button class="btn btn-secondary" type="button" (click)="mostrarForm=false" [disabled]="salvando">Cancelar</button>
+    </div>
+  </form>
+
+  <div class="card panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Tipo</th>
+            <th>Categoria</th>
+            <th>Descrição</th>
+            <th>Valor</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let l of itens">
+            <td>{{ l.dataLancamento }}</td>
+            <td>{{ label(l.tipo) }}</td>
+            <td>{{ label(l.categoria) }}</td>
+            <td><strong>{{ l.descricao }}</strong></td>
+            <td>{{ l.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
+            <td><span class="badge">{{ label(l.status) }}</span></td>
+            <td class="actions">
+              <button class="btn btn-secondary" (click)="editar(l)">Editar</button>
+              <button class="btn btn-success" (click)="pagar(l.id)">Pagar</button>
+              <button class="btn btn-warning" (click)="cancelar(l.id)">Cancelar</button>
+              <button class="btn btn-danger" (click)="deletar(l.id)">Excluir</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

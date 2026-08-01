@@ -1,0 +1,108 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-subtitle">Resumo operacional e financeiro do mês atual.</p>
+    </div>
+    <button class="btn btn-secondary" type="button" (click)="carregar()">Atualizar</button>
+  </div>
+  <div class="alert error" *ngIf="erro">{{ erro }}</div>
+  <div class="empty card" *ngIf="loading">Carregando dashboard...</div>
+
+  <ng-container *ngIf="resumo as r">
+    <section class="grid-cards">
+      <article class="metric card"><span>Receita do mês</span><strong>{{ r.receitaMes | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</strong></article>
+      <article class="metric card"><span>Despesa do mês</span><strong>{{ r.despesaMes | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</strong></article>
+      <article class="metric card"><span>Lucro bruto</span><strong [class.negative]="r.lucroBrutoMes < 0">{{ r.lucroBrutoMes | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</strong></article>
+      <article class="metric card"><span>Margem do mês</span><strong [class.negative]="margemLucro < 0">{{ margemLucro | number:'1.1-1':'pt-BR' }}%</strong></article>
+    </section>
+
+    <section class="analytics-grid">
+      <article class="chart-panel card">
+        <div class="panel-heading">
+          <div>
+            <h2>Gastos por categoria</h2>
+            <p>Distribuição das despesas registradas no mês.</p>
+          </div>
+          <strong>{{ totalDespesasMapeadas | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</strong>
+        </div>
+        <div class="chart-wrap">
+          <canvas #despesasChart aria-label="Gráfico de despesas por categoria"></canvas>
+        </div>
+        <div class="category-list" *ngIf="despesasPorCategoria.length; else semDespesas">
+          <div *ngFor="let item of despesasPorCategoria">
+            <span>{{ nomeCategoria(item.categoria) }}</span>
+            <strong>{{ item.percentual | number:'1.0-1':'pt-BR' }}%</strong>
+            <small>{{ item.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</small>
+          </div>
+        </div>
+        <ng-template #semDespesas>
+          <p class="empty-inline">Nenhuma despesa encontrada para o mês atual.</p>
+        </ng-template>
+      </article>
+
+      <article class="chart-panel card">
+        <div class="panel-heading financial-header">
+          <div>
+            <h2>Fluxo financeiro</h2>
+            <p>Compara o total de receitas e despesas do mês.</p>
+          </div>
+          <div class="profit-badge" [class.negative]="r.lucroBrutoMes < 0" [class.positive]="r.lucroBrutoMes >= 0">
+            <span>Lucro bruto</span>
+            <strong>{{ r.lucroBrutoMes | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</strong>
+          </div>
+        </div>
+        <div class="chart-wrap financial-chart">
+          <canvas #fluxoChart aria-label="Gráfico de receitas e despesas"></canvas>
+        </div>
+        <div class="expense-ranking" *ngIf="maioresDespesas.length">
+          <h3>Maiores despesas</h3>
+          <div *ngFor="let item of maioresDespesas">
+            <span>{{ item.descricao }}</span>
+            <small>{{ nomeCategoria(item.categoria) }}</small>
+            <strong>{{ item.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</strong>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <article class="chart-panel card monthly-panel">
+      <div class="panel-heading financial-header">
+        <div>
+          <h2>Histórico financeiro mensal</h2>
+          <p>Receitas, despesas e lucro bruto ao longo do ano.</p>
+        </div>
+
+        <div class="year-filter">
+          <label for="anoFinanceiro">Ano</label>
+          <input
+            id="anoFinanceiro"
+            type="number"
+            [(ngModel)]="anoSelecionado"
+            (change)="carregarFinanceiroMensal()"
+          />
+        </div>
+      </div>
+
+      <div class="chart-wrap monthly-chart" *ngIf="financeiroMensalChartData">
+        <canvas #mensalChart aria-label="Gráfico de histórico financeiro mensal"></canvas>
+      </div>
+    </article>
+
+    <section class="panel card status-grid">
+      <div><span>Total de veículos</span><strong>{{ r.totalVeiculos }}</strong></div>
+      <div><span>Veículos disponíveis</span><strong>{{ r.veiculosDisponiveis }}</strong></div>
+      <div><span>Em atendimento</span><strong>{{ r.veiculosEmAtendimento }}</strong></div>
+      <div><span>Em manutenção</span><strong>{{ r.veiculosEmManutencao }}</strong></div>
+      <div><span>Motoristas</span><strong>{{ r.totalMotoristas }}</strong></div>
+      <div><span>Clientes</span><strong>{{ r.totalClientes }}</strong></div>
+      <div><span>OS abertas</span><strong>{{ r.ordensAbertas }}</strong></div>
+      <div><span>OS em atendimento</span><strong>{{ r.ordensEmAtendimento }}</strong></div>
+      <div><span>OS faturadas</span><strong>{{ r.ordensFaturadas }}</strong></div>
+      <div><span>Documentos vencidos</span><strong>{{ r.documentosVencidos }}</strong></div>
+      <div><span>Documentos a vencer</span><strong>{{ r.documentosAVencer }}</strong></div>
+      <div><span>Manutenções abertas</span><strong>{{ r.manutencoesAbertas }}</strong></div>
+      <div><span>Manutenções em andamento</span><strong>{{ r.manutencoesEmAndamento }}</strong></div>
+    </section>
+  </ng-container>
+</div>
