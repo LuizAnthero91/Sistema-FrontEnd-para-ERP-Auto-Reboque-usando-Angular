@@ -1,25 +1,26 @@
 <div class="shell" [class.menu-open]="menuOpen">
-  <aside class="sidebar card">
+  <aside class="sidebar card" aria-label="Menu principal">
     <div class="brand">
       <div class="brand-mark">T</div>
       <div>
         <strong>Auto Reboque Torá</strong>
         <small>ERP Operacional</small>
       </div>
+      <button class="close-menu" type="button" aria-label="Fechar menu" (click)="menuOpen=false">&times;</button>
     </div>
 
     <nav class="nav">
       <a *ngFor="let link of links" [routerLink]="link.path" routerLinkActive="active" (click)="menuOpen=false">
-        <span>{{ link.icon }}</span>
-        <span>{{ link.label }}</span>
+        <span class="nav-icon">{{ link.icon }}</span>
+        <span class="nav-label">{{ link.label }}</span>
       </a>
     </nav>
   </aside>
 
   <main class="main">
     <header class="topbar card">
-      <button class="menu-btn" type="button" (click)="menuOpen=!menuOpen">☰</button>
-      <div>
+      <button class="menu-btn" type="button" aria-label="Abrir menu" (click)="menuOpen=!menuOpen">☰</button>
+      <div class="user-summary">
         <strong>{{ user?.nome || 'Usuário' }}</strong>
         <small>{{ user?.perfil || 'ADMIN' }}</small>
       </div>
