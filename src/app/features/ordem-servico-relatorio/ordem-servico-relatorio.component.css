@@ -410,48 +410,49 @@
 
 @page {
   size: A4 portrait;
-  margin: 7mm;
+  margin: 5mm;
 }
 
 @media print {
 
-  html,
-  body {
-    width: 210mm;
-    height: 297mm;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fff !important;
+  .assinaturas {
+    margin-top: 8px !important;
+    gap: 18px !important;
   }
 
-  .no-print {
-    display: none !important;
+  .assinaturas > div {
+    padding-top: 4px !important;
   }
 
-  .relatorio-page {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fff !important;
+  .assinaturas span {
+    margin-top: 2px !important;
+    font-size: 7px !important;
+  }
+
+  .rodape {
+    margin-top: 4px !important;
+    padding-top: 3px !important;
+    font-size: 7px !important;
+    line-height: 1.05 !important;
+  }
+
+  .rodape strong,
+  .rodape span {
+    font-size: 7px !important;
+    line-height: 1.05 !important;
+  }
+
+  .rodape p {
+    margin: 1px 0 0 !important;
+    font-size: 6px !important;
+    line-height: 1.05 !important;
   }
 
   .documento-os {
-    width: 100% !important;
-    max-width: none !important;
-
-    margin: 0 !important;
-    padding: 6mm !important;
-
-    border: none !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-
-    font-size: 10px !important;
-    line-height: 1.2 !important;
-
-    page-break-inside: avoid;
-    break-inside: avoid;
+    padding-top: 5mm !important;
+    padding-bottom: 4mm !important;
   }
+}
 
   /* CABEÇALHO */
 
