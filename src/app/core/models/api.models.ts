@@ -12,9 +12,9 @@ export interface ApiErrorResponse {
   campos: ApiErrorCampo[];
 }
 
-/* =========================
+/* =========================================================
    AUTENTICAÇÃO
-========================= */
+========================================================= */
 
 export interface LoginRequest {
   email: string;
@@ -34,9 +34,9 @@ export interface UsuarioLogado {
   perfil: string;
 }
 
-/* =========================
-   VEÍCULOS
-========================= */
+/* =========================================================
+   VEÍCULOS DA FROTA
+========================================================= */
 
 export type StatusVeiculo =
   | 'DISPONIVEL'
@@ -71,9 +71,9 @@ export type VeiculoRequest = Omit<
   'id' | 'criadoEm' | 'atualizadoEm'
 >;
 
-/* =========================
+/* =========================================================
    MOTORISTAS
-========================= */
+========================================================= */
 
 export type StatusMotorista =
   | 'ATIVO'
@@ -99,9 +99,9 @@ export type MotoristaRequest = Omit<
   'id' | 'criadoEm' | 'atualizadoEm'
 >;
 
-/* =========================
+/* =========================================================
    CLIENTES
-========================= */
+========================================================= */
 
 export type TipoCliente =
   | 'PARTICULAR'
@@ -134,9 +134,9 @@ export type ClienteRequest = Omit<
   'id' | 'criadoEm' | 'atualizadoEm'
 >;
 
-/* =========================
+/* =========================================================
    ORDENS DE SERVIÇO
-========================= */
+========================================================= */
 
 export type TipoServico =
   | 'REMOCAO_VEICULO_LEVE'
@@ -163,6 +163,10 @@ export interface OrdemServico {
   clienteId: number;
   clienteNome: string;
 
+  /*
+   * Veículo da frota utilizado pela empresa.
+   * Exemplo: o guincho.
+   */
   veiculoId?: number;
   veiculoPlaca?: string;
   veiculoModelo?: string;
@@ -176,6 +180,10 @@ export interface OrdemServico {
   origem: string;
   destino?: string;
 
+  /*
+   * Dados internos da operação.
+   * Não serão mostrados na OS impressa.
+   */
   kmEstimado?: number;
   kmReal?: number;
 
@@ -186,11 +194,27 @@ export interface OrdemServico {
   dataConclusao?: string;
 
   observacao?: string;
+
+  /*
+   * Veículo atendido, pertencente ao cliente.
+   */
+  veiculoClientePlaca?: string;
+  veiculoClienteMarca?: string;
+  veiculoClienteModelo?: string;
+  veiculoClienteCor?: string;
+  veiculoClienteAno?: number;
+  veiculoClienteKm?: number;
+  veiculoClienteObservacao?: string;
 }
 
 export interface OrdemServicoRequest {
   clienteId: number;
+
+  /*
+   * Veículo da frota da empresa.
+   */
   veiculoId?: number | null;
+
   motoristaId?: number | null;
 
   tipoServico: TipoServico;
@@ -206,11 +230,22 @@ export interface OrdemServicoRequest {
   custoEstimado?: number | null;
 
   observacao?: string;
+
+  /*
+   * Veículo atendido do cliente.
+   */
+  veiculoClientePlaca?: string;
+  veiculoClienteMarca?: string;
+  veiculoClienteModelo?: string;
+  veiculoClienteCor?: string;
+  veiculoClienteAno?: number | null;
+  veiculoClienteKm?: number | null;
+  veiculoClienteObservacao?: string;
 }
 
-/* =========================
+/* =========================================================
    FINANCEIRO
-========================= */
+========================================================= */
 
 export type TipoLancamento =
   | 'RECEITA'
@@ -269,9 +304,9 @@ export interface ResumoFinanceiro {
   lucroBruto: number;
 }
 
-/* =========================
+/* =========================================================
    ABASTECIMENTOS
-========================= */
+========================================================= */
 
 export interface Abastecimento {
   id: number;
@@ -302,9 +337,9 @@ export interface AbastecimentoRequest {
   observacao?: string;
 }
 
-/* =========================
+/* =========================================================
    MANUTENÇÕES
-========================= */
+========================================================= */
 
 export type TipoManutencao =
   | 'PREVENTIVA'
@@ -360,9 +395,9 @@ export interface ManutencaoRequest {
   observacao?: string;
 }
 
-/* =========================
+/* =========================================================
    DOCUMENTOS DE VEÍCULOS
-========================= */
+========================================================= */
 
 export type TipoDocumentoVeiculo =
   | 'CRLV'
@@ -413,9 +448,9 @@ export interface DocumentoVeiculoRequest {
   observacao?: string;
 }
 
-/* =========================
+/* =========================================================
    DASHBOARD
-========================= */
+========================================================= */
 
 export interface DashboardResumo {
   inicioMes: string;

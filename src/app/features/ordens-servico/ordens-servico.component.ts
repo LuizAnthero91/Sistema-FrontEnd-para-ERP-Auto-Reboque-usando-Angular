@@ -1,6 +1,10 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 import { Router } from '@angular/router';
 
 import {
@@ -16,7 +20,11 @@ import { MotoristaService } from '../../core/services/motorista.service';
 import { OrdemServicoService } from '../../core/services/ordem-servico.service';
 import { VeiculoService } from '../../core/services/veiculo.service';
 
-import { cleanPayload, errorMessage } from '../../shared/form-utils';
+import {
+  cleanPayload,
+  errorMessage
+} from '../../shared/form-utils';
+
 import {
   label,
   statusOrdemOptions,
@@ -54,50 +62,132 @@ export class OrdensServicoComponent implements OnInit {
   erro = '';
   sucesso = '';
 
-  label = label;
-  tipoOptions = tipoServicoOptions;
-  statusOptions = statusOrdemOptions;
+  readonly label = label;
+  readonly tipoOptions = tipoServicoOptions;
+  readonly statusOptions = statusOrdemOptions;
 
   form = this.fb.group({
-    clienteId: [null as number | null, Validators.required],
-    veiculoId: [null as number | null],
-    motoristaId: [null as number | null],
+    clienteId: [
+      null as number | null,
+      Validators.required
+    ],
+
+    /*
+     * Guincho ou veículo da frota da empresa.
+     */
+    veiculoId: [
+      null as number | null
+    ],
+
+    motoristaId: [
+      null as number | null
+    ],
 
     tipoServico: [
       'REMOCAO_VEICULO_LEVE',
       Validators.required
     ],
 
-    status: [null as string | null],
+    status: [
+      null as string | null
+    ],
 
-    origem: ['', Validators.required],
+    origem: [
+      '',
+      Validators.required
+    ],
+
     destino: [''],
 
-    kmEstimado: [null as number | null],
-    kmReal: [null as number | null],
+    /*
+     * Dados internos da operação.
+     */
+    kmEstimado: [
+      null as number | null
+    ],
+
+    kmReal: [
+      null as number | null
+    ],
 
     valorCobrado: [0],
     custoEstimado: [0],
 
-    observacao: ['']
+    observacao: [''],
+
+    /*
+     * Veículo atendido do cliente.
+     */
+    veiculoClientePlaca: [
+      '',
+      [
+        Validators.maxLength(10),
+        Validators.pattern(/^[A-Za-z0-9-]{0,10}$/)
+      ]
+    ],
+
+    veiculoClienteMarca: [
+      '',
+      Validators.maxLength(80)
+    ],
+
+    veiculoClienteModelo: [
+      '',
+      Validators.maxLength(100)
+    ],
+
+    veiculoClienteCor: [
+      '',
+      Validators.maxLength(50)
+    ],
+
+    veiculoClienteAno: [
+      null as number | null,
+      [
+        Validators.min(1900),
+        Validators.max(2100)
+      ]
+    ],
+
+    veiculoClienteKm: [
+      null as number | null,
+      Validators.min(0)
+    ],
+
+    veiculoClienteObservacao: [
+      '',
+      Validators.maxLength(1000)
+    ]
   });
 
   ngOnInit(): void {
     this.carregar();
 
     this.clienteService.listar().subscribe({
-      next: resposta => this.clientes = resposta,
-      error: erro => this.erro = errorMessage(erro)
+      next: resposta => {
+        this.clientes = resposta;
+      },
+      error: erro => {
+        this.erro = errorMessage(erro);
+      }
     });
 
     this.veiculoService.listar().subscribe({
-      next: resposta => this.veiculos = resposta,
-      error: erro => this.erro = errorMessage(erro)
+      next: resposta => {
+        this.veiculos = resposta;
+      },
+      error: erro => {
+        this.erro = errorMessage(erro);
+      }
     });
 
     this.motoristaService.listar().subscribe({
-      next: resposta => this.motoristas = resposta,
-      error: erro => this.erro = errorMessage(erro)
+      next: resposta => {
+        this.motoristas = resposta;
+      },
+      error: erro => {
+        this.erro = errorMessage(erro);
+      }
     });
   }
 
@@ -105,8 +195,12 @@ export class OrdensServicoComponent implements OnInit {
     this.erro = '';
 
     this.service.listar().subscribe({
-      next: resposta => this.itens = resposta,
-      error: erro => this.erro = errorMessage(erro)
+      next: resposta => {
+        this.itens = resposta;
+      },
+      error: erro => {
+        this.erro = errorMessage(erro);
+      }
     });
   }
 
@@ -119,15 +213,28 @@ export class OrdensServicoComponent implements OnInit {
       clienteId: null,
       veiculoId: null,
       motoristaId: null,
+
       tipoServico: 'REMOCAO_VEICULO_LEVE',
       status: null,
+
       origem: '',
       destino: '',
+
       kmEstimado: null,
       kmReal: null,
+
       valorCobrado: 0,
       custoEstimado: 0,
-      observacao: ''
+
+      observacao: '',
+
+      veiculoClientePlaca: '',
+      veiculoClienteMarca: '',
+      veiculoClienteModelo: '',
+      veiculoClienteCor: '',
+      veiculoClienteAno: null,
+      veiculoClienteKm: null,
+      veiculoClienteObservacao: ''
     });
 
     this.mostrarForm = true;
@@ -142,15 +249,41 @@ export class OrdensServicoComponent implements OnInit {
       clienteId: ordem.clienteId,
       veiculoId: ordem.veiculoId ?? null,
       motoristaId: ordem.motoristaId ?? null,
+
       tipoServico: ordem.tipoServico,
       status: ordem.status,
+
       origem: ordem.origem,
       destino: ordem.destino ?? '',
+
       kmEstimado: ordem.kmEstimado ?? null,
       kmReal: ordem.kmReal ?? null,
+
       valorCobrado: ordem.valorCobrado ?? 0,
       custoEstimado: ordem.custoEstimado ?? 0,
-      observacao: ordem.observacao ?? ''
+
+      observacao: ordem.observacao ?? '',
+
+      veiculoClientePlaca:
+        ordem.veiculoClientePlaca ?? '',
+
+      veiculoClienteMarca:
+        ordem.veiculoClienteMarca ?? '',
+
+      veiculoClienteModelo:
+        ordem.veiculoClienteModelo ?? '',
+
+      veiculoClienteCor:
+        ordem.veiculoClienteCor ?? '',
+
+      veiculoClienteAno:
+        ordem.veiculoClienteAno ?? null,
+
+      veiculoClienteKm:
+        ordem.veiculoClienteKm ?? null,
+
+      veiculoClienteObservacao:
+        ordem.veiculoClienteObservacao ?? ''
     });
 
     this.mostrarForm = true;
@@ -162,12 +295,32 @@ export class OrdensServicoComponent implements OnInit {
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.erro = 'Verifique os campos destacados antes de salvar.';
       return;
     }
 
-    const payload = cleanPayload(
-      this.form.getRawValue()
-    ) as unknown as OrdemServicoRequest;
+    const valorFormulario = this.form.getRawValue();
+
+    const payload = cleanPayload({
+      ...valorFormulario,
+
+      veiculoClientePlaca:
+        valorFormulario.veiculoClientePlaca
+          ?.trim()
+          .toUpperCase(),
+
+      veiculoClienteMarca:
+        valorFormulario.veiculoClienteMarca?.trim(),
+
+      veiculoClienteModelo:
+        valorFormulario.veiculoClienteModelo?.trim(),
+
+      veiculoClienteCor:
+        valorFormulario.veiculoClienteCor?.trim(),
+
+      veiculoClienteObservacao:
+        valorFormulario.veiculoClienteObservacao?.trim()
+    }) as unknown as OrdemServicoRequest;
 
     const requisicao = this.editId
       ? this.service.atualizar(this.editId, payload)
@@ -181,9 +334,12 @@ export class OrdensServicoComponent implements OnInit {
 
         this.mostrarForm = false;
         this.editId = undefined;
+
         this.carregar();
       },
-      error: erro => this.erro = errorMessage(erro)
+      error: erro => {
+        this.erro = errorMessage(erro);
+      }
     });
   }
 
@@ -195,37 +351,21 @@ export class OrdensServicoComponent implements OnInit {
     ]);
   }
 
-  deletar(id: number): void {
-    const confirmado = confirm(
-      'Deseja realmente excluir esta ordem de serviço?'
-    );
-
-    if (!confirmado) {
-      return;
-    }
-
-    this.service.deletar(id).subscribe({
-      next: () => {
-        this.sucesso = 'Ordem de serviço excluída.';
-        this.carregar();
-      },
-      error: erro => this.erro = errorMessage(erro)
-    });
-  }
-
   iniciar(id: number): void {
     this.service.iniciar(id).subscribe({
       next: () => {
         this.sucesso = 'Atendimento iniciado.';
         this.carregar();
       },
-      error: erro => this.erro = errorMessage(erro)
+      error: erro => {
+        this.erro = errorMessage(erro);
+      }
     });
   }
 
   concluir(id: number): void {
     const valorInformado = prompt(
-      'KM real da conclusão. Deixe vazio caso não queira informar:'
+      'KM interno da operação. Deixe vazio caso não queira informar:'
     );
 
     const kmReal = valorInformado?.trim()
@@ -233,8 +373,8 @@ export class OrdensServicoComponent implements OnInit {
       : null;
 
     if (
-      valorInformado?.trim() &&
-      (!Number.isFinite(kmReal) || Number(kmReal) < 0)
+      kmReal !== null &&
+      (!Number.isFinite(kmReal) || kmReal < 0)
     ) {
       this.erro = 'Informe uma quilometragem válida.';
       return;
@@ -245,7 +385,9 @@ export class OrdensServicoComponent implements OnInit {
         this.sucesso = 'Ordem de serviço concluída.';
         this.carregar();
       },
-      error: erro => this.erro = errorMessage(erro)
+      error: erro => {
+        this.erro = errorMessage(erro);
+      }
     });
   }
 
@@ -255,7 +397,9 @@ export class OrdensServicoComponent implements OnInit {
         this.sucesso = 'Ordem de serviço faturada.';
         this.carregar();
       },
-      error: erro => this.erro = errorMessage(erro)
+      error: erro => {
+        this.erro = errorMessage(erro);
+      }
     });
   }
 
@@ -273,7 +417,35 @@ export class OrdensServicoComponent implements OnInit {
         this.sucesso = 'Ordem de serviço cancelada.';
         this.carregar();
       },
-      error: erro => this.erro = errorMessage(erro)
+      error: erro => {
+        this.erro = errorMessage(erro);
+      }
     });
+  }
+
+  deletar(id: number): void {
+    const confirmado = confirm(
+      'Deseja realmente excluir esta ordem de serviço?'
+    );
+
+    if (!confirmado) {
+      return;
+    }
+
+    this.service.deletar(id).subscribe({
+      next: () => {
+        this.sucesso = 'Ordem de serviço excluída.';
+        this.carregar();
+      },
+      error: erro => {
+        this.erro = errorMessage(erro);
+      }
+    });
+  }
+
+  cancelarFormulario(): void {
+    this.mostrarForm = false;
+    this.editId = undefined;
+    this.erro = '';
   }
 }

@@ -372,3 +372,35 @@
     display: none;
   }
 }
+
+.form-section-title {
+  margin-top: 6px;
+  padding: 10px 0 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.form-section-title h3 {
+  margin: 0;
+  color: var(--primary);
+  font-size: 17px;
+}
+
+.form-section-title p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.internal-section {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+@media (max-width: 640px) {
+  .form-section-title {
+    grid-column: span 1;
+  }
+}

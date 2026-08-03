@@ -1,6 +1,8 @@
 <div class="relatorio-page">
 
+  <!-- BOTÕES DA TELA -->
   <div class="toolbar no-print">
+
     <button
       class="toolbar-button secondary"
       type="button"
@@ -11,83 +13,154 @@
     <button
       class="toolbar-button primary"
       type="button"
-      [disabled]="!ordem"
+      [disabled]="!ordem || carregando"
       (click)="imprimir()">
       Imprimir / Salvar PDF
     </button>
+
   </div>
 
-  <div class="mensagem" *ngIf="carregando">
+  <!-- CARREGAMENTO -->
+  <div
+    class="mensagem"
+    *ngIf="carregando">
     Carregando Ordem de Serviço...
   </div>
 
-  <div class="mensagem erro" *ngIf="erro">
+  <!-- ERRO -->
+  <div
+    class="mensagem erro"
+    *ngIf="!carregando && erro">
     {{ erro }}
   </div>
 
+  <!-- DOCUMENTO -->
   <article
     class="documento-os"
-    *ngIf="ordem as os">
+    *ngIf="!carregando && ordem as os">
 
+    <!-- CABEÇALHO -->
     <header class="cabecalho">
 
       <div class="marca">
+
         <div class="marca-simbolo">
           TORÁ
         </div>
 
         <div class="empresa-identidade">
-          <h1>{{ empresa.nomeFantasia }}</h1>
+
+          <h1>
+            {{ empresa.nomeFantasia }}
+          </h1>
 
           <p>
             Reboque e transporte de veículos
           </p>
+
         </div>
+
       </div>
 
       <div class="numero-os">
-        <span>Ordem de Serviço</span>
-        <strong>Nº {{ os.numeroOs }}</strong>
+
+        <span>
+          Ordem de Serviço
+        </span>
+
+        <strong>
+          Nº {{ os.numeroOs }}
+        </strong>
+
       </div>
 
     </header>
 
+    <!-- DADOS DA EMPRESA -->
     <section class="dados-empresa">
 
-      <div>
-        <span class="campo-label">Razão Social</span>
-        <strong>{{ empresa.razaoSocial }}</strong>
-      </div>
+      <div class="span-2">
 
-      <div>
-        <span class="campo-label">CNPJ</span>
-        <strong>{{ empresa.cnpj }}</strong>
-      </div>
+        <span class="campo-label">
+          Razão Social
+        </span>
 
-      <div>
-        <span class="campo-label">Telefones</span>
         <strong>
-          {{ empresa.telefoneFixo }} |
+          {{ empresa.razaoSocial }}
+        </strong>
+
+      </div>
+
+      <div>
+
+        <span class="campo-label">
+          CNPJ
+        </span>
+
+        <strong>
+          {{ empresa.cnpj }}
+        </strong>
+
+      </div>
+
+      <div>
+
+        <span class="campo-label">
+          Telefone
+        </span>
+
+        <strong>
+          {{ empresa.telefoneFixo }}
+        </strong>
+
+      </div>
+
+      <div>
+
+        <span class="campo-label">
+          WhatsApp
+        </span>
+
+        <strong>
           {{ empresa.whatsapp }}
         </strong>
+
       </div>
 
       <div>
-        <span class="campo-label">Atendimento</span>
-        <strong>{{ empresa.horario }}</strong>
+
+        <span class="campo-label">
+          Horário
+        </span>
+
+        <strong>
+          {{ empresa.horario }}
+        </strong>
+
       </div>
 
-      <div class="span-2">
-        <span class="campo-label">Área de atendimento</span>
-        <strong>{{ empresa.localAtendimento }}</strong>
+      <div class="span-3">
+
+        <span class="campo-label">
+          Área de atendimento
+        </span>
+
+        <strong>
+          {{ empresa.localAtendimento }}
+        </strong>
+
       </div>
 
     </section>
 
+    <!-- DATAS E STATUS -->
     <section class="status-grid">
 
       <div>
-        <span class="campo-label">Data de abertura</span>
+
+        <span class="campo-label">
+          Data de abertura
+        </span>
 
         <strong>
           {{
@@ -96,10 +169,14 @@
               : '-'
           }}
         </strong>
+
       </div>
 
       <div>
-        <span class="campo-label">Data de conclusão</span>
+
+        <span class="campo-label">
+          Data de conclusão
+        </span>
 
         <strong>
           {{
@@ -108,118 +185,262 @@
               : '-'
           }}
         </strong>
+
       </div>
 
       <div>
-        <span class="campo-label">Status da OS</span>
+
+        <span class="campo-label">
+          Status
+        </span>
 
         <strong class="status-badge">
           {{ label(os.status) }}
         </strong>
+
       </div>
 
     </section>
 
+    <!-- DADOS DO CLIENTE -->
     <section class="secao">
 
-      <h2>Dados do cliente</h2>
+      <h2>
+        Dados do cliente
+      </h2>
 
       <div class="dados-grid">
 
         <div class="span-2">
-          <span class="campo-label">Cliente</span>
-          <strong>{{ os.clienteNome }}</strong>
+
+          <span class="campo-label">
+            Nome
+          </span>
+
+          <strong>
+            {{ os.clienteNome }}
+          </strong>
+
         </div>
 
         <div>
-          <span class="campo-label">Código interno</span>
-          <strong>{{ os.clienteId }}</strong>
+
+          <span class="campo-label">
+            Código interno
+          </span>
+
+          <strong>
+            {{ os.clienteId }}
+          </strong>
+
         </div>
 
       </div>
 
     </section>
 
+    <!-- VEÍCULO DO CLIENTE -->
     <section class="secao">
 
-      <h2>Dados do veículo</h2>
+      <h2>
+        Veículo do cliente
+      </h2>
 
       <div class="dados-grid">
 
         <div>
-          <span class="campo-label">Placa</span>
-          <strong>{{ os.veiculoPlaca || '-' }}</strong>
+
+          <span class="campo-label">
+            Placa
+          </span>
+
+          <strong>
+            {{ os.veiculoClientePlaca || '-' }}
+          </strong>
+
         </div>
 
         <div>
-          <span class="campo-label">Modelo</span>
-          <strong>{{ os.veiculoModelo || '-' }}</strong>
+
+          <span class="campo-label">
+            Marca
+          </span>
+
+          <strong>
+            {{ os.veiculoClienteMarca || '-' }}
+          </strong>
+
         </div>
 
         <div>
-          <span class="campo-label">Motorista responsável</span>
-          <strong>{{ os.motoristaNome || '-' }}</strong>
+
+          <span class="campo-label">
+            Modelo
+          </span>
+
+          <strong>
+            {{ os.veiculoClienteModelo || '-' }}
+          </strong>
+
         </div>
+
+        <div>
+
+          <span class="campo-label">
+            Cor
+          </span>
+
+          <strong>
+            {{ os.veiculoClienteCor || '-' }}
+          </strong>
+
+        </div>
+
+        <div>
+
+          <span class="campo-label">
+            Ano
+          </span>
+
+          <strong>
+            {{ os.veiculoClienteAno || '-' }}
+          </strong>
+
+        </div>
+
+        <div>
+
+          <span class="campo-label">
+            Quilometragem do veículo
+          </span>
+
+          <strong>
+            {{
+              os.veiculoClienteKm != null
+                ? (os.veiculoClienteKm + ' km')
+                : '-'
+            }}
+          </strong>
+
+        </div>
+
+      </div>
+
+      <div
+        class="observacao"
+        *ngIf="os.veiculoClienteObservacao">
+
+        <span class="campo-label">
+          Observações do veículo
+        </span>
+
+        <p>
+          {{ os.veiculoClienteObservacao }}
+        </p>
 
       </div>
 
     </section>
 
+    <!-- DADOS DO SERVIÇO -->
     <section class="secao">
 
-      <h2>Dados do serviço</h2>
+      <h2>
+        Dados do serviço
+      </h2>
 
       <div class="dados-grid">
 
         <div>
-          <span class="campo-label">Tipo de serviço</span>
-          <strong>{{ label(os.tipoServico) }}</strong>
-        </div>
 
-        <div>
-          <span class="campo-label">Origem</span>
-          <strong>{{ os.origem }}</strong>
-        </div>
+          <span class="campo-label">
+            Tipo de serviço
+          </span>
 
-        <div>
-          <span class="campo-label">Destino</span>
-          <strong>{{ os.destino || '-' }}</strong>
-        </div>
-
-        <div>
-          <span class="campo-label">KM estimado</span>
           <strong>
-            {{ os.kmEstimado ?? '-' }}
+            {{ label(os.tipoServico) }}
           </strong>
+
         </div>
 
         <div>
-          <span class="campo-label">KM real</span>
+
+          <span class="campo-label">
+            Motorista responsável
+          </span>
+
           <strong>
-            {{ os.kmReal ?? '-' }}
+            {{ os.motoristaNome || '-' }}
           </strong>
+
+        </div>
+
+        <div>
+
+          <span class="campo-label">
+            Guincho utilizado
+          </span>
+
+          <strong>
+            {{ os.veiculoPlaca || '-' }}
+          </strong>
+
+        </div>
+
+        <div class="span-2">
+
+          <span class="campo-label">
+            Origem
+          </span>
+
+          <strong>
+            {{ os.origem }}
+          </strong>
+
+        </div>
+
+        <div>
+
+          <span class="campo-label">
+            Destino
+          </span>
+
+          <strong>
+            {{ os.destino || '-' }}
+          </strong>
+
         </div>
 
       </div>
 
       <div class="observacao">
-        <span class="campo-label">Descrição / observações</span>
+
+        <span class="campo-label">
+          Descrição e observações do serviço
+        </span>
 
         <p>
           {{ os.observacao || 'Nenhuma observação registrada.' }}
         </p>
+
       </div>
 
     </section>
 
+    <!-- VALORES -->
     <section class="secao">
 
-      <h2>Valores</h2>
+      <h2>
+        Valores
+      </h2>
 
       <div class="valores">
 
         <div>
-          <span>Valor do serviço</span>
+
+          <span>
+            Valor do serviço
+          </span>
 
           <strong>
             {{
@@ -227,10 +448,14 @@
                 | currency:'BRL':'symbol':'1.2-2':'pt-BR'
             }}
           </strong>
+
         </div>
 
         <div>
-          <span>Valor total</span>
+
+          <span>
+            Valor total
+          </span>
 
           <strong class="valor-total">
             {{
@@ -238,43 +463,63 @@
                 | currency:'BRL':'symbol':'1.2-2':'pt-BR'
             }}
           </strong>
+
         </div>
 
       </div>
 
-      <p class="nota-interna">
-        O custo estimado não é exibido ao cliente por ser uma
-        informação administrativa interna.
+      <p class="nota-interna no-print">
+        Informações internas de custo e quilometragem da operação
+        não são exibidas neste documento.
       </p>
 
     </section>
 
+    <!-- ASSINATURAS -->
     <section class="assinaturas">
 
       <div>
+
         <div class="linha-assinatura"></div>
-        <span>Responsável Auto Reboque Torá</span>
+
+        <span>
+          Responsável Auto Reboque Torá
+        </span>
+
       </div>
 
       <div>
+
         <div class="linha-assinatura"></div>
-        <span>Cliente</span>
+
+        <span>
+          Cliente
+        </span>
+
       </div>
 
     </section>
 
+    <!-- RODAPÉ -->
     <footer class="rodape">
 
-      <strong>{{ empresa.nomeFantasia }}</strong>
+      <strong>
+        {{ empresa.nomeFantasia }}
+      </strong>
 
       <span>
-        {{ empresa.telefoneFixo }} |
+        {{ empresa.telefoneFixo }}
+        |
         {{ empresa.whatsapp }}
+      </span>
+
+      <span>
+        {{ empresa.localAtendimento }}
       </span>
 
       <p>
         Este documento é uma Ordem de Serviço e não substitui
-        nota fiscal ou documento fiscal oficial.
+        nota fiscal ou qualquer outro documento fiscal oficial.
       </p>
 
     </footer>

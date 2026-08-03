@@ -1,6 +1,19 @@
-import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  CommonModule,
+  CurrencyPipe,
+  DatePipe
+} from '@angular/common';
+
+import {
+  Component,
+  OnInit,
+  inject
+} from '@angular/core';
+
+import {
+  ActivatedRoute,
+  Router
+} from '@angular/router';
 
 import { OrdemServico } from '../../core/models/api.models';
 import { OrdemServicoService } from '../../core/services/ordem-servico.service';
@@ -22,7 +35,9 @@ export class OrdemServicoRelatorioComponent implements OnInit {
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly ordemServicoService = inject(OrdemServicoService);
+  private readonly ordemServicoService = inject(
+    OrdemServicoService
+  );
 
   ordem?: OrdemServico;
 
@@ -42,19 +57,30 @@ export class OrdemServicoRelatorioComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const idParam = this.route.snapshot.paramMap.get('id');
+    const id = Number(idParam);
 
     if (!Number.isInteger(id) || id <= 0) {
-      this.erro = 'Identificador da ordem de serviço inválido.';
+      this.erro =
+        'Identificador da ordem de serviço inválido.';
+
       this.carregando = false;
       return;
     }
+
+    this.carregarOrdem(id);
+  }
+
+  private carregarOrdem(id: number): void {
+    this.carregando = true;
+    this.erro = '';
 
     this.ordemServicoService.buscar(id).subscribe({
       next: ordem => {
         this.ordem = ordem;
         this.carregando = false;
       },
+
       error: erro => {
         this.erro = errorMessage(erro);
         this.carregando = false;
@@ -63,6 +89,10 @@ export class OrdemServicoRelatorioComponent implements OnInit {
   }
 
   imprimir(): void {
+    if (!this.ordem) {
+      return;
+    }
+
     window.print();
   }
 
@@ -75,6 +105,8 @@ export class OrdemServicoRelatorioComponent implements OnInit {
   }
 
   valorLiquido(): number {
-    return this.valorOuZero(this.ordem?.valorCobrado);
+    return this.valorOuZero(
+      this.ordem?.valorCobrado
+    );
   }
 }
