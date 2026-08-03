@@ -21,7 +21,7 @@
     <header class="topbar card">
       <button class="menu-btn" type="button" aria-label="Abrir menu" (click)="menuOpen=!menuOpen">☰</button>
       <div class="user-summary">
-        <strong>{{ user?.nome || 'Usuário' }}</strong>
+        <strong>Bem vindo, {{ user?.nome || 'carregando...' }}</strong>
         <small>{{ user?.perfil || 'ADMIN' }}</small>
       </div>
       <button class="btn btn-ghost" type="button" (click)="logout()">Sair</button>

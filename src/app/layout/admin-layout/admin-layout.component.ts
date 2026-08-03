@@ -13,7 +13,7 @@ import { UsuarioLogado } from '../../core/models/api.models';
 })
 export class AdminLayoutComponent implements OnInit {
   private readonly auth = inject(AuthService);
-  user: UsuarioLogado | null = this.auth.getUsuarioLocal();
+  user: UsuarioLogado | null = null;
   menuOpen = false;
   links = [
     { label: 'Dashboard', icon: '📊', path: '/dashboard' },
@@ -26,6 +26,12 @@ export class AdminLayoutComponent implements OnInit {
     { label: 'Manutenções', icon: '🔧', path: '/manutencoes' },
     { label: 'Documentos', icon: '📄', path: '/documentos-veiculos' }
   ];
-  ngOnInit(): void { this.auth.me().subscribe({ next: user => this.user = user, error: () => {} }); }
+  ngOnInit(): void {
+    this.auth.me().subscribe({
+      next: user => this.user = user,
+      error: () => this.user = this.auth.getUsuarioLocal()
+    });
+  }
+
   logout(): void { this.auth.logout(); }
 }
