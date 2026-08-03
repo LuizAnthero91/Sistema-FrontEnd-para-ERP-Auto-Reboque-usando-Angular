@@ -2,7 +2,9 @@
 
   <div class="page-header">
     <div>
-      <h1 class="page-title">Ordens de Serviço</h1>
+      <h1 class="page-title">
+        Ordens de Serviço
+      </h1>
 
       <p class="page-subtitle">
         Atendimentos de guincho, remoção e transporte.
@@ -17,11 +19,15 @@
     </button>
   </div>
 
-  <div class="alert error" *ngIf="erro">
+  <div
+    class="alert error"
+    *ngIf="erro">
     {{ erro }}
   </div>
 
-  <div class="alert success" *ngIf="sucesso">
+  <div
+    class="alert success"
+    *ngIf="sucesso">
     {{ sucesso }}
   </div>
 
@@ -32,6 +38,16 @@
     (ngSubmit)="salvar()">
 
     <div class="form-grid">
+
+      <!-- DADOS DO ATENDIMENTO -->
+
+      <div class="span-3 form-section-title">
+        <h3>Dados do atendimento</h3>
+
+        <p>
+          Selecione o cliente, o guincho e o motorista responsáveis.
+        </p>
+      </div>
 
       <div>
         <label>Cliente</label>
@@ -47,10 +63,19 @@
             {{ cliente.nome }}
           </option>
         </select>
+
+        <small
+          class="field-error"
+          *ngIf="
+            form.controls.clienteId.touched &&
+            form.controls.clienteId.invalid
+          ">
+          Selecione o cliente.
+        </small>
       </div>
 
       <div>
-        <label>Veículo</label>
+        <label>Guincho da frota</label>
 
         <select formControlName="veiculoId">
           <option [ngValue]="null">
@@ -66,7 +91,7 @@
       </div>
 
       <div>
-        <label>Motorista</label>
+        <label>Motorista responsável</label>
 
         <select formControlName="motoristaId">
           <option [ngValue]="null">
@@ -120,12 +145,141 @@
           formControlName="valorCobrado">
       </div>
 
+      <!-- VEÍCULO DO CLIENTE -->
+
+      <div class="span-3 form-section-title">
+        <h3>Veículo do cliente</h3>
+
+        <p>
+          Estes dados serão exibidos na Ordem de Serviço entregue ao cliente.
+        </p>
+      </div>
+
+      <div>
+        <label>Placa</label>
+
+        <input
+          class="input"
+          maxlength="10"
+          placeholder="Ex.: ABC1D23"
+          formControlName="veiculoClientePlaca">
+
+        <small
+          class="field-error"
+          *ngIf="
+            form.controls.veiculoClientePlaca.touched &&
+            form.controls.veiculoClientePlaca.invalid
+          ">
+          Informe uma placa válida.
+        </small>
+      </div>
+
+      <div>
+        <label>Marca</label>
+
+        <input
+          class="input"
+          maxlength="80"
+          placeholder="Ex.: Fiat"
+          formControlName="veiculoClienteMarca">
+      </div>
+
+      <div>
+        <label>Modelo</label>
+
+        <input
+          class="input"
+          maxlength="100"
+          placeholder="Ex.: Palio"
+          formControlName="veiculoClienteModelo">
+      </div>
+
+      <div>
+        <label>Cor</label>
+
+        <input
+          class="input"
+          maxlength="50"
+          placeholder="Ex.: Prata"
+          formControlName="veiculoClienteCor">
+      </div>
+
+      <div>
+        <label>Ano</label>
+
+        <input
+          class="input"
+          type="number"
+          min="1900"
+          max="2100"
+          placeholder="Ex.: 2020"
+          formControlName="veiculoClienteAno">
+
+        <small
+          class="field-error"
+          *ngIf="
+            form.controls.veiculoClienteAno.touched &&
+            form.controls.veiculoClienteAno.invalid
+          ">
+          Informe um ano entre 1900 e 2100.
+        </small>
+      </div>
+
+      <div>
+        <label>KM do veículo</label>
+
+        <input
+          class="input"
+          type="number"
+          min="0"
+          step="1"
+          placeholder="Ex.: 85000"
+          formControlName="veiculoClienteKm">
+
+        <small
+          class="field-error"
+          *ngIf="
+            form.controls.veiculoClienteKm.touched &&
+            form.controls.veiculoClienteKm.invalid
+          ">
+          A quilometragem não pode ser negativa.
+        </small>
+      </div>
+
+      <div class="span-3">
+        <label>Observações do veículo</label>
+
+        <textarea
+          class="input"
+          rows="3"
+          maxlength="1000"
+          placeholder="Avarias existentes, estado do veículo ou outras informações."
+          formControlName="veiculoClienteObservacao">
+        </textarea>
+      </div>
+
+      <!-- ROTA E SERVIÇO -->
+
+      <div class="span-3 form-section-title">
+        <h3>Rota e serviço</h3>
+      </div>
+
       <div class="span-2">
         <label>Origem</label>
 
         <input
           class="input"
+          placeholder="Local onde o veículo será recolhido"
           formControlName="origem">
+
+        <small
+          class="field-error"
+          *ngIf="
+            form.controls.origem.touched &&
+            form.controls.origem.invalid
+          ">
+          A origem é obrigatória.
+        </small>
       </div>
 
       <div>
@@ -133,11 +287,33 @@
 
         <input
           class="input"
+          placeholder="Local de entrega"
           formControlName="destino">
       </div>
 
+      <div class="span-3">
+        <label>Observações do serviço</label>
+
+        <textarea
+          class="input"
+          rows="4"
+          placeholder="Descrição do atendimento, condições do serviço e observações."
+          formControlName="observacao">
+        </textarea>
+      </div>
+
+      <!-- DADOS INTERNOS -->
+
+      <div class="span-3 form-section-title internal-section">
+        <h3>Dados internos da operação</h3>
+
+        <p>
+          Estes dados não aparecem na Ordem de Serviço entregue ao cliente.
+        </p>
+      </div>
+
       <div>
-        <label>KM estimado</label>
+        <label>KM estimado da operação</label>
 
         <input
           class="input"
@@ -148,7 +324,7 @@
       </div>
 
       <div>
-        <label>KM real</label>
+        <label>KM real da operação</label>
 
         <input
           class="input"
@@ -169,21 +345,11 @@
           formControlName="custoEstimado">
       </div>
 
-      <div class="span-3">
-        <label>Observação</label>
-
-        <textarea
-          class="input"
-          rows="4"
-          formControlName="observacao">
-        </textarea>
-      </div>
-
     </div>
 
     <div
       class="actions"
-      style="margin-top: 14px">
+      style="margin-top: 18px">
 
       <button
         class="btn btn-success"
@@ -194,11 +360,12 @@
       <button
         class="btn btn-secondary"
         type="button"
-        (click)="mostrarForm = false">
+        (click)="cancelarFormulario()">
         Cancelar
       </button>
 
     </div>
+
   </form>
 
   <div class="card panel">
@@ -211,7 +378,7 @@
           <tr>
             <th>OS</th>
             <th>Cliente</th>
-            <th>Veículo</th>
+            <th>Veículo do cliente</th>
             <th>Status</th>
             <th>Valor</th>
             <th>Rota</th>
@@ -236,7 +403,22 @@
             </td>
 
             <td>
-              {{ ordem.veiculoPlaca || '-' }}
+              <strong>
+                {{ ordem.veiculoClientePlaca || '-' }}
+              </strong>
+
+              <div
+                *ngIf="
+                  ordem.veiculoClienteMarca ||
+                  ordem.veiculoClienteModelo
+                ">
+                {{ ordem.veiculoClienteMarca || '' }}
+                {{ ordem.veiculoClienteModelo || '' }}
+              </div>
+
+              <small *ngIf="ordem.veiculoClienteCor">
+                {{ ordem.veiculoClienteCor }}
+              </small>
             </td>
 
             <td>
@@ -312,7 +494,9 @@
 
     </div>
 
-    <div class="empty" *ngIf="!itens.length">
+    <div
+      class="empty"
+      *ngIf="!itens.length">
       Nenhuma ordem cadastrada.
     </div>
 
