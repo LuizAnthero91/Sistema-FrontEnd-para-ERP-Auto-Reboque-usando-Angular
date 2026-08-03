@@ -1,14 +1,14 @@
 <section class="login-page">
   <div class="login-card card">
     <div class="login-hero">
-      <div class="logo">T</div>
-      <h1>ERP Auto Reboque Torá</h1>
+      
+      <h1>ERP Auto Reboque</h1>
       <p>Controle frota, ordens de serviço, financeiro, abastecimentos, manutenções e documentos em uma única tela.</p>
     </div>
 
     <form [formGroup]="form" (ngSubmit)="entrar()" class="login-form">
       <h2>Entrar no sistema</h2>
-      <p class="muted">Entre com seu e-mail e senha.</p>
+      <p class="muted"></p>
       <div class="alert error" *ngIf="erro">{{ erro }}</div>
       <div>
         <label>Email</label>
@@ -23,7 +23,7 @@
   </div>
 
   <footer class="login-footer">
-    <span>Auto Reboque Torá 2026</span>
+    <span>ERP Auto Reboque 2026</span>
     <span><a href="https://lcdigitaltec.com.br" target="_blank" rel="noopener noreferrer">LCDigitalTec.com.br</a> todos os direitos reservados</span>
   </footer>
 </section>
