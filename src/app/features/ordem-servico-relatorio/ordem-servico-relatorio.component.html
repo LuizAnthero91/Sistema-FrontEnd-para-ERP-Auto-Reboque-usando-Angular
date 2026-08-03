@@ -1,529 +1,505 @@
-<div class="relatorio-page">
+<div class="page">
 
-  <!-- BOTÕES DA TELA -->
-  <div class="toolbar no-print">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">
+        Ordens de Serviço
+      </h1>
+
+      <p class="page-subtitle">
+        Atendimentos de guincho, remoção e transporte.
+      </p>
+    </div>
 
     <button
-      class="toolbar-button secondary"
+      class="btn btn-primary"
       type="button"
-      (click)="voltar()">
-      Voltar
+      (click)="novo()">
+      Nova OS
     </button>
-
-    <button
-      class="toolbar-button primary"
-      type="button"
-      [disabled]="!ordem || carregando"
-      (click)="imprimir()">
-      Imprimir / Salvar PDF
-    </button>
-
   </div>
 
-  <!-- CARREGAMENTO -->
   <div
-    class="mensagem"
-    *ngIf="carregando">
-    Carregando Ordem de Serviço...
-  </div>
-
-  <!-- ERRO -->
-  <div
-    class="mensagem erro"
-    *ngIf="!carregando && erro">
+    class="alert error"
+    *ngIf="erro">
     {{ erro }}
   </div>
 
-  <!-- DOCUMENTO -->
-  <article
-    class="documento-os"
-    *ngIf="!carregando && ordem as os">
+  <div
+    class="alert success"
+    *ngIf="sucesso">
+    {{ sucesso }}
+  </div>
 
-    <!-- CABEÇALHO -->
-    <header class="cabecalho">
+  <form
+    class="card panel"
+    *ngIf="mostrarForm"
+    [formGroup]="form"
+    (ngSubmit)="salvar()">
 
-      <div class="marca">
+    <div class="form-grid">
 
-        <div class="marca-simbolo">
-          TORÁ
-        </div>
+      <!-- DADOS DO ATENDIMENTO -->
 
-        <div class="empresa-identidade">
+      <div class="span-3 form-section-title">
+        <h3>Dados do atendimento</h3>
 
-          <h1>
-            {{ empresa.nomeFantasia }}
-          </h1>
-
-          <p>
-            Reboque e transporte de veículos
-          </p>
-
-        </div>
-
-      </div>
-
-      <div class="numero-os">
-
-        <span>
-          Ordem de Serviço
-        </span>
-
-        <strong>
-          Nº {{ os.numeroOs }}
-        </strong>
-
-      </div>
-
-    </header>
-
-    <!-- DADOS DA EMPRESA -->
-    <section class="dados-empresa">
-
-      <div class="span-2">
-
-        <span class="campo-label">
-          Razão Social
-        </span>
-
-        <strong>
-          {{ empresa.razaoSocial }}
-        </strong>
-
+        <p>
+          Selecione o cliente, o guincho e o motorista responsáveis.
+        </p>
       </div>
 
       <div>
+        <label>Cliente</label>
 
-        <span class="campo-label">
-          CNPJ
-        </span>
+        <select formControlName="clienteId">
+          <option [ngValue]="null">
+            Selecione
+          </option>
 
-        <strong>
-          {{ empresa.cnpj }}
-        </strong>
+          <option
+            *ngFor="let cliente of clientes"
+            [ngValue]="cliente.id">
+            {{ cliente.nome }}
+          </option>
+        </select>
 
+        <small
+          class="field-error"
+          *ngIf="
+            form.controls.clienteId.touched &&
+            form.controls.clienteId.invalid
+          ">
+          Selecione o cliente.
+        </small>
       </div>
 
       <div>
+        <label>Guincho da frota</label>
 
-        <span class="campo-label">
-          Telefone
-        </span>
+        <select formControlName="veiculoId">
+          <option [ngValue]="null">
+            Opcional
+          </option>
 
-        <strong>
-          {{ empresa.telefoneFixo }}
-        </strong>
-
+          <option
+            *ngFor="let veiculo of veiculos"
+            [ngValue]="veiculo.id">
+            {{ veiculo.placa }} - {{ veiculo.modelo }}
+          </option>
+        </select>
       </div>
 
       <div>
+        <label>Motorista responsável</label>
 
-        <span class="campo-label">
-          WhatsApp
-        </span>
+        <select formControlName="motoristaId">
+          <option [ngValue]="null">
+            Opcional
+          </option>
 
-        <strong>
-          {{ empresa.whatsapp }}
-        </strong>
-
+          <option
+            *ngFor="let motorista of motoristas"
+            [ngValue]="motorista.id">
+            {{ motorista.nome }}
+          </option>
+        </select>
       </div>
 
       <div>
+        <label>Tipo de serviço</label>
 
-        <span class="campo-label">
-          Horário
-        </span>
+        <select formControlName="tipoServico">
+          <option
+            *ngFor="let opcao of tipoOptions"
+            [value]="opcao">
+            {{ label(opcao) }}
+          </option>
+        </select>
+      </div>
 
-        <strong>
-          {{ empresa.horario }}
-        </strong>
+      <div>
+        <label>Status</label>
 
+        <select formControlName="status">
+          <option [ngValue]="null">
+            Manter atual
+          </option>
+
+          <option
+            *ngFor="let opcao of statusOptions"
+            [value]="opcao">
+            {{ label(opcao) }}
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <label>Valor cobrado</label>
+
+        <input
+          class="input"
+          type="number"
+          min="0"
+          step="0.01"
+          formControlName="valorCobrado">
+      </div>
+
+      <!-- VEÍCULO DO CLIENTE -->
+
+      <div class="span-3 form-section-title">
+        <h3>Veículo do cliente</h3>
+
+        <p>
+          Estes dados serão exibidos na Ordem de Serviço entregue ao cliente.
+        </p>
+      </div>
+
+      <div>
+        <label>Placa</label>
+
+        <input
+          class="input"
+          maxlength="10"
+          placeholder="Ex.: ABC1D23"
+          formControlName="veiculoClientePlaca">
+
+        <small
+          class="field-error"
+          *ngIf="
+            form.controls.veiculoClientePlaca.touched &&
+            form.controls.veiculoClientePlaca.invalid
+          ">
+          Informe uma placa válida.
+        </small>
+      </div>
+
+      <div>
+        <label>Marca</label>
+
+        <input
+          class="input"
+          maxlength="80"
+          placeholder="Ex.: Fiat"
+          formControlName="veiculoClienteMarca">
+      </div>
+
+      <div>
+        <label>Modelo</label>
+
+        <input
+          class="input"
+          maxlength="100"
+          placeholder="Ex.: Palio"
+          formControlName="veiculoClienteModelo">
+      </div>
+
+      <div>
+        <label>Cor</label>
+
+        <input
+          class="input"
+          maxlength="50"
+          placeholder="Ex.: Prata"
+          formControlName="veiculoClienteCor">
+      </div>
+
+      <div>
+        <label>Ano</label>
+
+        <input
+          class="input"
+          type="number"
+          min="1900"
+          max="2100"
+          placeholder="Ex.: 2020"
+          formControlName="veiculoClienteAno">
+
+        <small
+          class="field-error"
+          *ngIf="
+            form.controls.veiculoClienteAno.touched &&
+            form.controls.veiculoClienteAno.invalid
+          ">
+          Informe um ano entre 1900 e 2100.
+        </small>
+      </div>
+
+      <div>
+        <label>KM do veículo</label>
+
+        <input
+          class="input"
+          type="number"
+          min="0"
+          step="1"
+          placeholder="Ex.: 85000"
+          formControlName="veiculoClienteKm">
+
+        <small
+          class="field-error"
+          *ngIf="
+            form.controls.veiculoClienteKm.touched &&
+            form.controls.veiculoClienteKm.invalid
+          ">
+          A quilometragem não pode ser negativa.
+        </small>
       </div>
 
       <div class="span-3">
+        <label>Observações do veículo</label>
 
-        <span class="campo-label">
-          Área de atendimento
-        </span>
-
-        <strong>
-          {{ empresa.localAtendimento }}
-        </strong>
-
+        <textarea
+          class="input"
+          rows="3"
+          maxlength="1000"
+          placeholder="Avarias existentes, estado do veículo ou outras informações."
+          formControlName="veiculoClienteObservacao">
+        </textarea>
       </div>
 
-    </section>
+      <!-- ROTA E SERVIÇO -->
 
-    <!-- DATAS E STATUS -->
-    <section class="status-grid">
-
-      <div>
-
-        <span class="campo-label">
-          Data de abertura
-        </span>
-
-        <strong>
-          {{
-            os.dataAbertura
-              ? (os.dataAbertura | date:'dd/MM/yyyy HH:mm')
-              : '-'
-          }}
-        </strong>
-
+      <div class="span-3 form-section-title">
+        <h3>Rota e serviço</h3>
       </div>
 
-      <div>
+      <div class="span-2">
+        <label>Origem</label>
 
-        <span class="campo-label">
-          Data de conclusão
-        </span>
+        <input
+          class="input"
+          placeholder="Local onde o veículo será recolhido"
+          formControlName="origem">
 
-        <strong>
-          {{
-            os.dataConclusao
-              ? (os.dataConclusao | date:'dd/MM/yyyy HH:mm')
-              : '-'
-          }}
-        </strong>
-
+        <small
+          class="field-error"
+          *ngIf="
+            form.controls.origem.touched &&
+            form.controls.origem.invalid
+          ">
+          A origem é obrigatória.
+        </small>
       </div>
 
       <div>
+        <label>Destino</label>
 
-        <span class="campo-label">
-          Status
-        </span>
-
-        <strong class="status-badge">
-          {{ label(os.status) }}
-        </strong>
-
+        <input
+          class="input"
+          placeholder="Local de entrega"
+          formControlName="destino">
       </div>
 
-    </section>
+      <div class="span-3">
+        <label>Observações do serviço</label>
 
-    <!-- DADOS DO CLIENTE -->
-    <section class="secao">
-
-      <h2>
-        Dados do cliente
-      </h2>
-
-      <div class="dados-grid">
-
-        <div class="span-2">
-
-          <span class="campo-label">
-            Nome
-          </span>
-
-          <strong>
-            {{ os.clienteNome }}
-          </strong>
-
-        </div>
-
-        <div>
-
-          <span class="campo-label">
-            Código interno
-          </span>
-
-          <strong>
-            {{ os.clienteId }}
-          </strong>
-
-        </div>
-
+        <textarea
+          class="input"
+          rows="4"
+          placeholder="Descrição do atendimento, condições do serviço e observações."
+          formControlName="observacao">
+        </textarea>
       </div>
 
-    </section>
+      <!-- DADOS INTERNOS -->
 
-    <!-- VEÍCULO DO CLIENTE -->
-    <section class="secao">
-
-      <h2>
-        Veículo do cliente
-      </h2>
-
-      <div class="dados-grid">
-
-        <div>
-
-          <span class="campo-label">
-            Placa
-          </span>
-
-          <strong>
-            {{ os.veiculoClientePlaca || '-' }}
-          </strong>
-
-        </div>
-
-        <div>
-
-          <span class="campo-label">
-            Marca
-          </span>
-
-          <strong>
-            {{ os.veiculoClienteMarca || '-' }}
-          </strong>
-
-        </div>
-
-        <div>
-
-          <span class="campo-label">
-            Modelo
-          </span>
-
-          <strong>
-            {{ os.veiculoClienteModelo || '-' }}
-          </strong>
-
-        </div>
-
-        <div>
-
-          <span class="campo-label">
-            Cor
-          </span>
-
-          <strong>
-            {{ os.veiculoClienteCor || '-' }}
-          </strong>
-
-        </div>
-
-        <div>
-
-          <span class="campo-label">
-            Ano
-          </span>
-
-          <strong>
-            {{ os.veiculoClienteAno || '-' }}
-          </strong>
-
-        </div>
-
-        <div>
-
-          <span class="campo-label">
-            Quilometragem do veículo
-          </span>
-
-          <strong>
-            {{
-              os.veiculoClienteKm != null
-                ? (os.veiculoClienteKm + ' km')
-                : '-'
-            }}
-          </strong>
-
-        </div>
-
-      </div>
-
-      <div
-        class="observacao"
-        *ngIf="os.veiculoClienteObservacao">
-
-        <span class="campo-label">
-          Observações do veículo
-        </span>
+      <div class="span-3 form-section-title internal-section">
+        <h3>Dados internos da operação</h3>
 
         <p>
-          {{ os.veiculoClienteObservacao }}
+          Estes dados não aparecem na Ordem de Serviço entregue ao cliente.
         </p>
-
-      </div>
-
-    </section>
-
-    <!-- DADOS DO SERVIÇO -->
-    <section class="secao">
-
-      <h2>
-        Dados do serviço
-      </h2>
-
-      <div class="dados-grid">
-
-        <div>
-
-          <span class="campo-label">
-            Tipo de serviço
-          </span>
-
-          <strong>
-            {{ label(os.tipoServico) }}
-          </strong>
-
-        </div>
-
-        <div>
-
-          <span class="campo-label">
-            Motorista responsável
-          </span>
-
-          <strong>
-            {{ os.motoristaNome || '-' }}
-          </strong>
-
-        </div>
-
-        <div>
-
-          <span class="campo-label">
-            Guincho utilizado
-          </span>
-
-          <strong>
-            {{ os.veiculoPlaca || '-' }}
-          </strong>
-
-        </div>
-
-        <div class="span-2">
-
-          <span class="campo-label">
-            Origem
-          </span>
-
-          <strong>
-            {{ os.origem }}
-          </strong>
-
-        </div>
-
-        <div>
-
-          <span class="campo-label">
-            Destino
-          </span>
-
-          <strong>
-            {{ os.destino || '-' }}
-          </strong>
-
-        </div>
-
-      </div>
-
-      <div class="observacao">
-
-        <span class="campo-label">
-          Descrição e observações do serviço
-        </span>
-
-        <p>
-          {{ os.observacao || 'Nenhuma observação registrada.' }}
-        </p>
-
-      </div>
-
-    </section>
-
-    <!-- VALORES -->
-    <section class="secao">
-
-      <h2>
-        Valores
-      </h2>
-
-      <div class="valores">
-
-        <div>
-
-          <span>
-            Valor do serviço
-          </span>
-
-          <strong>
-            {{
-              valorOuZero(os.valorCobrado)
-                | currency:'BRL':'symbol':'1.2-2':'pt-BR'
-            }}
-          </strong>
-
-        </div>
-
-        <div>
-
-          <span>
-            Valor total
-          </span>
-
-          <strong class="valor-total">
-            {{
-              valorLiquido()
-                | currency:'BRL':'symbol':'1.2-2':'pt-BR'
-            }}
-          </strong>
-
-        </div>
-
-      </div>
-
-      <p class="nota-interna no-print">
-        Informações internas de custo e quilometragem da operação
-        não são exibidas neste documento.
-      </p>
-
-    </section>
-
-    <!-- ASSINATURAS -->
-    <section class="assinaturas">
-
-      <div>
-
-        <div class="linha-assinatura"></div>
-
-        <span>
-          Responsável Auto Reboque Torá
-        </span>
-
       </div>
 
       <div>
+        <label>KM estimado da operação</label>
 
-        <div class="linha-assinatura"></div>
-
-        <span>
-          Cliente
-        </span>
-
+        <input
+          class="input"
+          type="number"
+          min="0"
+          step="0.01"
+          formControlName="kmEstimado">
       </div>
 
-    </section>
+      <div>
+        <label>KM real da operação</label>
 
-    <!-- RODAPÉ -->
-    <footer class="rodape">
+        <input
+          class="input"
+          type="number"
+          min="0"
+          step="0.01"
+          formControlName="kmReal">
+      </div>
 
-      <strong>
-        {{ empresa.nomeFantasia }}
-      </strong>
+      <div>
+        <label>Custo estimado</label>
 
-      <span>
-        {{ empresa.telefoneFixo }}
-        |
-        {{ empresa.whatsapp }}
-      </span>
+        <input
+          class="input"
+          type="number"
+          min="0"
+          step="0.01"
+          formControlName="custoEstimado">
+      </div>
 
-      <span>
-        {{ empresa.localAtendimento }}
-      </span>
+    </div>
 
-      <p>
-        Este documento é uma Ordem de Serviço e não substitui
-        nota fiscal ou qualquer outro documento fiscal oficial.
-      </p>
+    <div
+      class="actions"
+      style="margin-top: 18px">
 
-    </footer>
+      <button
+        class="btn btn-success"
+        type="submit">
+        Salvar
+      </button>
 
-  </article>
+      <button
+        class="btn btn-secondary"
+        type="button"
+        (click)="cancelarFormulario()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </form>
+
+  <div class="card panel">
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>OS</th>
+            <th>Cliente</th>
+            <th>Veículo do cliente</th>
+            <th>Status</th>
+            <th>Valor</th>
+            <th>Rota</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let ordem of itens">
+
+            <td>
+              <strong>
+                {{ ordem.numeroOs || ordem.id }}
+              </strong>
+            </td>
+
+            <td>
+              <strong>
+                {{ ordem.clienteNome }}
+              </strong>
+            </td>
+
+            <td>
+              <strong>
+                {{ ordem.veiculoClientePlaca || '-' }}
+              </strong>
+
+              <div
+                *ngIf="
+                  ordem.veiculoClienteMarca ||
+                  ordem.veiculoClienteModelo
+                ">
+                {{ ordem.veiculoClienteMarca || '' }}
+                {{ ordem.veiculoClienteModelo || '' }}
+              </div>
+
+              <small *ngIf="ordem.veiculoClienteCor">
+                {{ ordem.veiculoClienteCor }}
+              </small>
+            </td>
+
+            <td>
+              <span class="badge">
+                {{ label(ordem.status) }}
+              </span>
+            </td>
+
+            <td>
+              {{
+                ordem.valorCobrado
+                  | currency:'BRL':'symbol':'1.2-2':'pt-BR'
+              }}
+            </td>
+
+            <td>
+              {{ ordem.origem }}
+              →
+              {{ ordem.destino || '-' }}
+            </td>
+
+            <td class="actions">
+
+              <button
+                class="btn btn-ghost"
+                type="button"
+                (click)="visualizarRelatorio(ordem)">
+                Visualizar OS
+              </button>
+
+              <button
+                class="btn btn-secondary"
+                type="button"
+                (click)="editar(ordem)">
+                Editar
+              </button>
+
+              <button
+                class="btn btn-warning"
+                type="button"
+                (click)="iniciar(ordem.id)">
+                Iniciar
+              </button>
+
+              <button
+                class="btn btn-success"
+                type="button"
+                (click)="concluir(ordem.id)">
+                Concluir
+              </button>
+
+              <button
+                class="btn btn-primary"
+                type="button"
+                (click)="faturar(ordem.id)">
+                Faturar
+              </button>
+
+              <button
+                class="btn btn-danger"
+                type="button"
+                (click)="cancelar(ordem.id)">
+                Cancelar
+              </button>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <div
+      class="empty"
+      *ngIf="!itens.length">
+      Nenhuma ordem cadastrada.
+    </div>
+
+  </div>
 
 </div>
