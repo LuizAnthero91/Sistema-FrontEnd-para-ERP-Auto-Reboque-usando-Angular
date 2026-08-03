@@ -1,0 +1,374 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #edf1f3;
+  color: #1e262b;
+}
+
+.relatorio-page {
+  width: 100%;
+  padding: 24px 16px 40px;
+}
+
+.toolbar {
+  width: min(210mm, 100%);
+  margin: 0 auto 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.toolbar-button {
+  border: 0;
+  border-radius: 10px;
+  min-height: 42px;
+  padding: 10px 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.toolbar-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.toolbar-button.primary {
+  color: #ffffff;
+  background: #b42020;
+}
+
+.toolbar-button.secondary {
+  color: #25333a;
+  background: #ffffff;
+  border: 1px solid #cfd9dd;
+}
+
+.mensagem {
+  width: min(210mm, 100%);
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 12px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.mensagem.erro {
+  color: #8f2020;
+  border: 1px solid #efcaca;
+  background: #fff1f1;
+}
+
+.documento-os {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 14mm;
+  background: #ffffff;
+  border: 1px solid #d7dee1;
+  box-shadow: 0 14px 40px rgba(30, 45, 52, 0.12);
+}
+
+.cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 16px;
+  border-bottom: 3px solid #b42020;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.marca-simbolo {
+  min-width: 72px;
+  min-height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: #ffffff;
+  background: #b42020;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.empresa-identidade h1 {
+  margin: 0;
+  font-size: 25px;
+  line-height: 1.1;
+  color: #151b1f;
+}
+
+.empresa-identidade p {
+  margin: 5px 0 0;
+  color: #5c6c74;
+  font-size: 13px;
+}
+
+.numero-os {
+  min-width: 190px;
+  text-align: right;
+}
+
+.numero-os span {
+  display: block;
+  margin-bottom: 5px;
+  color: #5c6c74;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.numero-os strong {
+  display: block;
+  color: #b42020;
+  font-size: 26px;
+}
+
+.dados-empresa,
+.status-grid,
+.dados-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.dados-empresa {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 10px;
+  background: #f5f7f8;
+}
+
+.status-grid {
+  margin-top: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #dfe5e8;
+}
+
+.dados-empresa > div,
+.status-grid > div,
+.dados-grid > div {
+  min-width: 0;
+}
+
+.span-2 {
+  grid-column: span 2;
+}
+
+.campo-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #667780;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dados-empresa strong,
+.status-grid strong,
+.dados-grid strong {
+  display: block;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.status-badge {
+  width: fit-content;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #245a67;
+}
+
+.secao {
+  margin-top: 19px;
+}
+
+.secao h2 {
+  margin: 0 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #ccd6da;
+  color: #b42020;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.observacao {
+  min-height: 70px;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid #d8e0e3;
+  border-radius: 8px;
+}
+
+.observacao p {
+  margin: 7px 0 0;
+  white-space: pre-wrap;
+  font-size: 13px;
+}
+
+.valores {
+  width: min(360px, 100%);
+  margin-left: auto;
+  border: 1px solid #d5dde0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.valores div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 11px 13px;
+}
+
+.valores div + div {
+  border-top: 1px solid #d5dde0;
+  background: #f7f9fa;
+}
+
+.valor-total {
+  color: #b42020;
+  font-size: 17px;
+}
+
+.nota-interna {
+  margin: 9px 0 0;
+  color: #6c7a81;
+  font-size: 10px;
+  text-align: right;
+}
+
+.assinaturas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  margin-top: 60px;
+}
+
+.assinaturas > div {
+  text-align: center;
+}
+
+.linha-assinatura {
+  border-top: 1px solid #2e3539;
+}
+
+.assinaturas span {
+  display: block;
+  margin-top: 7px;
+  font-size: 12px;
+}
+
+.rodape {
+  margin-top: 28px;
+  padding-top: 12px;
+  border-top: 2px solid #b42020;
+  text-align: center;
+}
+
+.rodape strong,
+.rodape span {
+  display: block;
+  font-size: 12px;
+}
+
+.rodape p {
+  margin: 8px 0 0;
+  color: #5b686f;
+  font-size: 10px;
+}
+
+@media screen and (max-width: 850px) {
+  .relatorio-page {
+    padding: 12px 8px 24px;
+  }
+
+  .toolbar {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .toolbar-button {
+    width: 100%;
+  }
+
+  .documento-os {
+    width: 100%;
+    min-height: auto;
+    padding: 18px;
+  }
+
+  .cabecalho {
+    flex-direction: column;
+  }
+
+  .numero-os {
+    min-width: 0;
+    text-align: left;
+  }
+
+  .dados-empresa,
+  .status-grid,
+  .dados-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .span-2 {
+    grid-column: span 1;
+  }
+
+  .assinaturas {
+    grid-template-columns: 1fr;
+    gap: 55px;
+  }
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  :host {
+    min-height: auto;
+    background: #ffffff;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .relatorio-page {
+    padding: 0;
+  }
+
+  .documento-os {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0;
+    padding: 12mm 14mm;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .secao,
+  .dados-empresa,
+  .status-grid,
+  .assinaturas {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .nota-interna {
+    display: none;
+  }
+}

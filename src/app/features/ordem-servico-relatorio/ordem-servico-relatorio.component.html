@@ -1,0 +1,284 @@
+<div class="relatorio-page">
+
+  <div class="toolbar no-print">
+    <button
+      class="toolbar-button secondary"
+      type="button"
+      (click)="voltar()">
+      Voltar
+    </button>
+
+    <button
+      class="toolbar-button primary"
+      type="button"
+      [disabled]="!ordem"
+      (click)="imprimir()">
+      Imprimir / Salvar PDF
+    </button>
+  </div>
+
+  <div class="mensagem" *ngIf="carregando">
+    Carregando Ordem de Serviço...
+  </div>
+
+  <div class="mensagem erro" *ngIf="erro">
+    {{ erro }}
+  </div>
+
+  <article
+    class="documento-os"
+    *ngIf="ordem as os">
+
+    <header class="cabecalho">
+
+      <div class="marca">
+        <div class="marca-simbolo">
+          TORÁ
+        </div>
+
+        <div class="empresa-identidade">
+          <h1>{{ empresa.nomeFantasia }}</h1>
+
+          <p>
+            Reboque e transporte de veículos
+          </p>
+        </div>
+      </div>
+
+      <div class="numero-os">
+        <span>Ordem de Serviço</span>
+        <strong>Nº {{ os.numeroOs }}</strong>
+      </div>
+
+    </header>
+
+    <section class="dados-empresa">
+
+      <div>
+        <span class="campo-label">Razão Social</span>
+        <strong>{{ empresa.razaoSocial }}</strong>
+      </div>
+
+      <div>
+        <span class="campo-label">CNPJ</span>
+        <strong>{{ empresa.cnpj }}</strong>
+      </div>
+
+      <div>
+        <span class="campo-label">Telefones</span>
+        <strong>
+          {{ empresa.telefoneFixo }} |
+          {{ empresa.whatsapp }}
+        </strong>
+      </div>
+
+      <div>
+        <span class="campo-label">Atendimento</span>
+        <strong>{{ empresa.horario }}</strong>
+      </div>
+
+      <div class="span-2">
+        <span class="campo-label">Área de atendimento</span>
+        <strong>{{ empresa.localAtendimento }}</strong>
+      </div>
+
+    </section>
+
+    <section class="status-grid">
+
+      <div>
+        <span class="campo-label">Data de abertura</span>
+
+        <strong>
+          {{
+            os.dataAbertura
+              ? (os.dataAbertura | date:'dd/MM/yyyy HH:mm')
+              : '-'
+          }}
+        </strong>
+      </div>
+
+      <div>
+        <span class="campo-label">Data de conclusão</span>
+
+        <strong>
+          {{
+            os.dataConclusao
+              ? (os.dataConclusao | date:'dd/MM/yyyy HH:mm')
+              : '-'
+          }}
+        </strong>
+      </div>
+
+      <div>
+        <span class="campo-label">Status da OS</span>
+
+        <strong class="status-badge">
+          {{ label(os.status) }}
+        </strong>
+      </div>
+
+    </section>
+
+    <section class="secao">
+
+      <h2>Dados do cliente</h2>
+
+      <div class="dados-grid">
+
+        <div class="span-2">
+          <span class="campo-label">Cliente</span>
+          <strong>{{ os.clienteNome }}</strong>
+        </div>
+
+        <div>
+          <span class="campo-label">Código interno</span>
+          <strong>{{ os.clienteId }}</strong>
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="secao">
+
+      <h2>Dados do veículo</h2>
+
+      <div class="dados-grid">
+
+        <div>
+          <span class="campo-label">Placa</span>
+          <strong>{{ os.veiculoPlaca || '-' }}</strong>
+        </div>
+
+        <div>
+          <span class="campo-label">Modelo</span>
+          <strong>{{ os.veiculoModelo || '-' }}</strong>
+        </div>
+
+        <div>
+          <span class="campo-label">Motorista responsável</span>
+          <strong>{{ os.motoristaNome || '-' }}</strong>
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="secao">
+
+      <h2>Dados do serviço</h2>
+
+      <div class="dados-grid">
+
+        <div>
+          <span class="campo-label">Tipo de serviço</span>
+          <strong>{{ label(os.tipoServico) }}</strong>
+        </div>
+
+        <div>
+          <span class="campo-label">Origem</span>
+          <strong>{{ os.origem }}</strong>
+        </div>
+
+        <div>
+          <span class="campo-label">Destino</span>
+          <strong>{{ os.destino || '-' }}</strong>
+        </div>
+
+        <div>
+          <span class="campo-label">KM estimado</span>
+          <strong>
+            {{ os.kmEstimado ?? '-' }}
+          </strong>
+        </div>
+
+        <div>
+          <span class="campo-label">KM real</span>
+          <strong>
+            {{ os.kmReal ?? '-' }}
+          </strong>
+        </div>
+
+      </div>
+
+      <div class="observacao">
+        <span class="campo-label">Descrição / observações</span>
+
+        <p>
+          {{ os.observacao || 'Nenhuma observação registrada.' }}
+        </p>
+      </div>
+
+    </section>
+
+    <section class="secao">
+
+      <h2>Valores</h2>
+
+      <div class="valores">
+
+        <div>
+          <span>Valor do serviço</span>
+
+          <strong>
+            {{
+              valorOuZero(os.valorCobrado)
+                | currency:'BRL':'symbol':'1.2-2':'pt-BR'
+            }}
+          </strong>
+        </div>
+
+        <div>
+          <span>Valor total</span>
+
+          <strong class="valor-total">
+            {{
+              valorLiquido()
+                | currency:'BRL':'symbol':'1.2-2':'pt-BR'
+            }}
+          </strong>
+        </div>
+
+      </div>
+
+      <p class="nota-interna">
+        O custo estimado não é exibido ao cliente por ser uma
+        informação administrativa interna.
+      </p>
+
+    </section>
+
+    <section class="assinaturas">
+
+      <div>
+        <div class="linha-assinatura"></div>
+        <span>Responsável Auto Reboque Torá</span>
+      </div>
+
+      <div>
+        <div class="linha-assinatura"></div>
+        <span>Cliente</span>
+      </div>
+
+    </section>
+
+    <footer class="rodape">
+
+      <strong>{{ empresa.nomeFantasia }}</strong>
+
+      <span>
+        {{ empresa.telefoneFixo }} |
+        {{ empresa.whatsapp }}
+      </span>
+
+      <p>
+        Este documento é uma Ordem de Serviço e não substitui
+        nota fiscal ou documento fiscal oficial.
+      </p>
+
+    </footer>
+
+  </article>
+
+</div>
