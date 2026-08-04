@@ -356,8 +356,24 @@
     padding: 16px;
   }
 
+  .metric strong {
+    font-size: 20px;
+    line-height: 1.12;
+  }
+
   .chart-panel {
     padding: 12px;
+  }
+
+  .chart-wrap {
+    height: 220px;
+    min-height: 220px;
+  }
+
+  .financial-chart,
+  .monthly-chart {
+    height: 240px;
+    min-height: 240px;
   }
 
   .panel-heading > strong {

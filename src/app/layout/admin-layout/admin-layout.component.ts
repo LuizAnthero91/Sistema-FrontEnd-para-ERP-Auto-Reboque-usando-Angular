@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { UsuarioLogado } from '../../core/models/api.models';
@@ -11,7 +11,7 @@ import { UsuarioLogado } from '../../core/models/api.models';
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.css'
 })
-export class AdminLayoutComponent implements OnInit {
+export class AdminLayoutComponent implements OnInit, OnDestroy {
   private readonly auth = inject(AuthService);
   private readonly cdr = inject(ChangeDetectorRef);
   user: UsuarioLogado | null = null;
@@ -43,5 +43,22 @@ export class AdminLayoutComponent implements OnInit {
     });
   }
 
-  logout(): void { this.auth.logout(); }
+  abrirMenu(): void {
+    this.menuOpen = true;
+    document.body.classList.add('menu-mobile-open');
+  }
+
+  fecharMenu(): void {
+    this.menuOpen = false;
+    document.body.classList.remove('menu-mobile-open');
+  }
+
+  logout(): void {
+    this.fecharMenu();
+    this.auth.logout();
+  }
+
+  ngOnDestroy(): void {
+    document.body.classList.remove('menu-mobile-open');
+  }
 }

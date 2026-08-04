@@ -4,30 +4,65 @@
       <img
         class="brand-logo"
         src="assets/logoautoreboquetora.jpg"
-        alt="Auto Reboque Tora">
-      <div>
+        alt="Auto Reboque Torá">
+
+      <div class="brand-text">
         <strong>Auto Reboque Torá</strong>
         <small>ERP Operacional</small>
       </div>
-      <button class="close-menu" type="button" aria-label="Fechar menu" (click)="menuOpen=false">&times;</button>
+
+      <button
+        class="close-menu"
+        type="button"
+        aria-label="Fechar menu"
+        (click)="fecharMenu()">
+        ×
+      </button>
     </div>
 
     <nav class="nav">
-      <a *ngFor="let link of links" [routerLink]="link.path" routerLinkActive="active" (click)="menuOpen=false">
-        <span class="nav-icon">{{ link.icon }}</span>
-        <span class="nav-label">{{ link.label }}</span>
+      <a
+        *ngFor="let link of links"
+        [routerLink]="link.path"
+        routerLinkActive="active"
+        (click)="fecharMenu()">
+        <span class="nav-icon" aria-hidden="true">
+          {{ link.icon }}
+        </span>
+
+        <span class="nav-label">
+          {{ link.label }}
+        </span>
       </a>
     </nav>
   </aside>
 
   <main class="main">
     <header class="topbar card">
-      <button class="menu-btn" type="button" aria-label="Abrir menu" (click)="menuOpen=!menuOpen">☰</button>
+      <button
+        class="menu-btn"
+        type="button"
+        aria-label="Abrir menu"
+        (click)="abrirMenu()">
+        ☰
+      </button>
+
       <div class="user-summary">
-        <strong>Bem vindo, {{ user?.nome || 'carregando...' }}</strong>
-        <small>{{ user?.perfil || 'ADMIN' }}</small>
+        <strong>
+          Bem vindo, {{ user?.nome || 'carregando...' }}
+        </strong>
+
+        <small>
+          {{ user?.perfil || 'ADMIN' }}
+        </small>
       </div>
-      <button class="btn btn-ghost" type="button" (click)="logout()">Sair</button>
+
+      <button
+        class="logout-btn"
+        type="button"
+        (click)="logout()">
+        Sair
+      </button>
     </header>
 
     <section class="content">
@@ -36,8 +71,22 @@
 
     <footer class="footer card">
       <span>Auto Reboque Torá 2026</span>
-      <span><a href="https://lcdigitaltec.com.br" target="_blank" rel="noopener noreferrer">LCDigitalTec.com.br</a> todos os direitos reservados</span>
+
+      <span>
+        <a
+          href="https://lcdigitaltec.com.br"
+          target="_blank"
+          rel="noopener noreferrer">
+          LCDigitalTec.com.br
+        </a>
+        todos os direitos reservados
+      </span>
     </footer>
   </main>
 </div>
-<div class="overlay" *ngIf="menuOpen" (click)="menuOpen=false"></div>
+
+<div
+  class="overlay"
+  *ngIf="menuOpen"
+  (click)="fecharMenu()">
+</div>
