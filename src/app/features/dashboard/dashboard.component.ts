@@ -1,8 +1,17 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { AfterViewChecked, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  AfterViewChecked,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  inject
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Chart, ChartConfiguration, ChartData, registerables } from 'chart.js';
-import { forkJoin } from 'rxjs';
+import { finalize, forkJoin } from 'rxjs';
 import { DashboardFinanceiroMensal, DashboardResumo, LancamentoFinanceiro } from '../../core/models/api.models';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { FinanceiroService } from '../../core/services/financeiro.service';
@@ -27,6 +36,7 @@ interface CategoriaGasto {
 export class DashboardComponent implements AfterViewChecked, OnDestroy, OnInit {
   private readonly service = inject(DashboardService);
   private readonly financeiroService = inject(FinanceiroService);
+  private readonly cdr = inject(ChangeDetectorRef);
   @ViewChild('despesasChart') private despesasCanvas?: ElementRef<HTMLCanvasElement>;
   @ViewChild('fluxoChart') private fluxoCanvas?: ElementRef<HTMLCanvasElement>;
   @ViewChild('mensalChart') private mensalCanvas?: ElementRef<HTMLCanvasElement>;
@@ -101,22 +111,31 @@ export class DashboardComponent implements AfterViewChecked, OnDestroy, OnInit {
   carregar(): void {
     this.loading = true;
     this.erro = '';
+    this.cdr.markForCheck();
+
     forkJoin({
       resumo: this.service.resumo(),
       lancamentos: this.financeiroService.listar()
-    }).subscribe({
-      next: ({ resumo, lancamentos }) => {
-        this.resumo = resumo;
-        this.prepararIndicadores(lancamentos, resumo);
-        this.renderPendente = true;
-        this.carregarFinanceiroMensal();
-      },
-      error: e => {
-        this.erro = errorMessage(e);
-        this.loading = false;
-      },
-      complete: () => this.loading = false
-    });
+    })
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.markForCheck();
+        })
+      )
+      .subscribe({
+        next: ({ resumo, lancamentos }) => {
+          this.resumo = resumo;
+          this.prepararIndicadores(lancamentos, resumo);
+          this.renderPendente = true;
+          this.carregarFinanceiroMensal();
+          this.cdr.markForCheck();
+        },
+        error: e => {
+          this.erro = errorMessage(e);
+          this.cdr.markForCheck();
+        }
+      });
   }
 
   nomeCategoria(categoria: string): string {
@@ -128,8 +147,12 @@ export class DashboardComponent implements AfterViewChecked, OnDestroy, OnInit {
       next: dados => {
         this.montarGraficoFinanceiroMensal(dados);
         this.renderMensalPendente = true;
+        this.cdr.markForCheck();
       },
-      error: () => console.error('Erro ao carregar historico financeiro mensal')
+      error: e => {
+        console.error('Erro ao carregar histórico financeiro mensal', e);
+        this.cdr.markForCheck();
+      }
     });
   }
 
