@@ -1,5 +1,5 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LancamentoFinanceiro, LancamentoFinanceiroRequest, ResumoFinanceiro, Veiculo } from '../../core/models/api.models';
 import { FinanceiroService } from '../../core/services/financeiro.service';
@@ -14,9 +14,10 @@ import { categoriaFinanceiraOptions, label, statusPagamentoOptions, tipoLancamen
   templateUrl: './financeiro.component.html'
 })
 export class FinanceiroComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private service = inject(FinanceiroService);
-  private veiculoService = inject(VeiculoService);
+  private readonly fb = inject(FormBuilder);
+  private readonly service = inject(FinanceiroService);
+  private readonly veiculoService = inject(VeiculoService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   itens: LancamentoFinanceiro[] = [];
   veiculos: Veiculo[] = [];
@@ -47,16 +48,47 @@ export class FinanceiroComponent implements OnInit {
 
   ngOnInit(): void {
     this.carregar();
-    this.veiculoService.listar().subscribe(r => this.veiculos = r);
+    this.carregarVeiculos();
     this.carregarResumo();
   }
 
   carregar(): void {
-    this.service.listar().subscribe({ next: r => this.itens = r, error: e => this.erro = errorMessage(e) });
+    this.service.listar().subscribe({
+      next: r => {
+        this.itens = r;
+        this.cdr.markForCheck();
+      },
+      error: e => {
+        this.erro = errorMessage(e);
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  carregarVeiculos(): void {
+    this.veiculoService.listar().subscribe({
+      next: r => {
+        this.veiculos = r;
+        this.cdr.markForCheck();
+      },
+      error: e => {
+        this.erro = errorMessage(e);
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   carregarResumo(): void {
-    this.service.resumo(this.inicio, this.fim).subscribe({ next: r => this.resumo = r, error: e => this.erro = errorMessage(e) });
+    this.service.resumo(this.inicio, this.fim).subscribe({
+      next: r => {
+        this.resumo = r;
+        this.cdr.markForCheck();
+      },
+      error: e => {
+        this.erro = errorMessage(e);
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   novo(): void {
@@ -65,6 +97,7 @@ export class FinanceiroComponent implements OnInit {
     this.sucesso = '';
     this.form.reset({ tipo: 'DESPESA', categoria: 'DIESEL', valor: 0, dataLancamento: todayIso() });
     this.mostrarForm = true;
+    this.cdr.markForCheck();
   }
 
   editar(lancamento: LancamentoFinanceiro): void {
@@ -73,6 +106,7 @@ export class FinanceiroComponent implements OnInit {
     this.sucesso = '';
     this.form.reset({ ...lancamento });
     this.mostrarForm = true;
+    this.cdr.markForCheck();
   }
 
   salvar(): void {
@@ -82,31 +116,45 @@ export class FinanceiroComponent implements OnInit {
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.erro = 'Preencha os campos obrigatórios para salvar o lançamento.';
+      this.erro = 'Preencha os campos obrigatorios para salvar o lancamento.';
+      this.cdr.markForCheck();
       return;
     }
 
     this.salvando = true;
+    this.cdr.markForCheck();
+
     const payload = cleanPayload(this.form.getRawValue()) as unknown as LancamentoFinanceiroRequest;
     const request = this.editId ? this.service.atualizar(this.editId, payload) : this.service.criar(payload);
 
     request.subscribe({
       next: () => {
-        this.sucesso = 'Lançamento salvo';
+        this.sucesso = 'Lancamento salvo';
         this.mostrarForm = false;
         this.salvando = false;
         this.carregar();
         this.carregarResumo();
+        this.cdr.markForCheck();
       },
       error: e => {
         this.erro = errorMessage(e);
         this.salvando = false;
+        this.cdr.markForCheck();
       }
     });
   }
 
   pagar(id: number): void {
-    this.service.pagar(id).subscribe({ next: () => this.carregar(), error: e => this.erro = errorMessage(e) });
+    this.service.pagar(id).subscribe({
+      next: () => {
+        this.carregar();
+        this.cdr.markForCheck();
+      },
+      error: e => {
+        this.erro = errorMessage(e);
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   cancelar(id: number): void {
@@ -114,19 +162,27 @@ export class FinanceiroComponent implements OnInit {
       next: () => {
         this.carregar();
         this.carregarResumo();
+        this.cdr.markForCheck();
       },
-      error: e => this.erro = errorMessage(e)
+      error: e => {
+        this.erro = errorMessage(e);
+        this.cdr.markForCheck();
+      }
     });
   }
 
   deletar(id: number): void {
-    if (confirm('Excluir lançamento?')) {
+    if (confirm('Excluir lancamento?')) {
       this.service.deletar(id).subscribe({
         next: () => {
           this.carregar();
           this.carregarResumo();
+          this.cdr.markForCheck();
         },
-        error: e => this.erro = errorMessage(e)
+        error: e => {
+          this.erro = errorMessage(e);
+          this.cdr.markForCheck();
+        }
       });
     }
   }

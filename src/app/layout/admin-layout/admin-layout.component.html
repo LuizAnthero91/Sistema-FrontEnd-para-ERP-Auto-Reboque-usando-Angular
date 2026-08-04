@@ -28,7 +28,7 @@
     </header>
 
     <section class="content">
-      <router-outlet />
+      <router-outlet *ngIf="sessaoCarregada" />
     </section>
 
     <footer class="footer card">

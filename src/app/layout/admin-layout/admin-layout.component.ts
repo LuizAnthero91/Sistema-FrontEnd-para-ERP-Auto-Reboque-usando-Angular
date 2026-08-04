@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { UsuarioLogado } from '../../core/models/api.models';
@@ -13,7 +13,9 @@ import { UsuarioLogado } from '../../core/models/api.models';
 })
 export class AdminLayoutComponent implements OnInit {
   private readonly auth = inject(AuthService);
+  private readonly cdr = inject(ChangeDetectorRef);
   user: UsuarioLogado | null = null;
+  sessaoCarregada = false;
   menuOpen = false;
   links = [
     { label: 'Dashboard', icon: '📊', path: '/dashboard' },
@@ -28,8 +30,16 @@ export class AdminLayoutComponent implements OnInit {
   ];
   ngOnInit(): void {
     this.auth.me().subscribe({
-      next: user => this.user = user,
-      error: () => this.user = this.auth.getUsuarioLocal()
+      next: user => {
+        this.user = user;
+        this.sessaoCarregada = true;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.user = this.auth.getUsuarioLocal();
+        this.sessaoCarregada = true;
+        this.cdr.markForCheck();
+      }
     });
   }
 

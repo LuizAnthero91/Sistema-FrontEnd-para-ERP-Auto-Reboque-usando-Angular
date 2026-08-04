@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { switchMap } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { errorMessage } from '../../shared/form-utils';
 
@@ -28,8 +29,10 @@ export class LoginComponent {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     this.loading = true; this.erro = '';
     const value = this.form.getRawValue();
-    this.auth.login({ email: value.email!, senha: value.senha! }).subscribe({
-      next: () => this.auth.me().subscribe({ next: () => this.router.navigate(['/dashboard']), error: () => this.router.navigate(['/dashboard']) }),
+    this.auth.login({ email: value.email!, senha: value.senha! }).pipe(
+      switchMap(() => this.auth.me())
+    ).subscribe({
+      next: () => this.router.navigate(['/dashboard']),
       error: err => { this.erro = errorMessage(err); this.loading = false; },
       complete: () => this.loading = false
     });

@@ -17,6 +17,9 @@ export function errorMessage(error: unknown): string {
     }
     return body?.mensagem || body?.erro || `Erro HTTP ${error.status}`;
   }
+  if (error instanceof Error) {
+    return error.message;
+  }
   return 'Erro inesperado. Tente novamente.';
 }
 
