@@ -445,13 +445,17 @@
               <button
                 class="btn btn-ghost"
                 type="button"
+                title="Visualizar OS"
+                aria-label="Visualizar OS"
                 (click)="visualizarRelatorio(ordem)">
-                Visualizar OS
+                Visualizar / imprimir
               </button>
 
               <button
                 class="btn btn-secondary"
                 type="button"
+                title="Editar"
+                aria-label="Editar"
                 (click)="editar(ordem)">
                 Editar
               </button>
@@ -459,6 +463,8 @@
               <button
                 class="btn btn-warning"
                 type="button"
+                title="Iniciar"
+                aria-label="Iniciar"
                 (click)="iniciar(ordem.id)">
                 Iniciar
               </button>
@@ -466,6 +472,8 @@
               <button
                 class="btn btn-success"
                 type="button"
+                title="Concluir"
+                aria-label="Concluir"
                 (click)="concluir(ordem.id)">
                 Concluir
               </button>
@@ -473,6 +481,8 @@
               <button
                 class="btn btn-primary"
                 type="button"
+                title="Faturar"
+                aria-label="Faturar"
                 (click)="faturar(ordem.id)">
                 Faturar
               </button>
@@ -480,6 +490,8 @@
               <button
                 class="btn btn-danger"
                 type="button"
+                title="Cancelar"
+                aria-label="Cancelar"
                 (click)="cancelar(ordem.id)">
                 Cancelar
               </button>

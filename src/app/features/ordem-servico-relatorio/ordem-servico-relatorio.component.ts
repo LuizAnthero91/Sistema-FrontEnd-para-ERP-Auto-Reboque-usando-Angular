@@ -57,6 +57,15 @@ export class OrdemServicoRelatorioComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    const ordemNavegacao = history.state?.ordem as
+      | OrdemServico
+      | undefined;
+
+    if (ordemNavegacao?.id) {
+      this.ordem = ordemNavegacao;
+      this.carregando = false;
+    }
+
     const idParam = this.route.snapshot.paramMap.get('id');
     const id = Number(idParam);
 
@@ -72,7 +81,7 @@ export class OrdemServicoRelatorioComponent implements OnInit {
   }
 
   private carregarOrdem(id: number): void {
-    this.carregando = true;
+    this.carregando = !this.ordem;
     this.erro = '';
 
     this.ordemServicoService.buscar(id).subscribe({
@@ -82,7 +91,10 @@ export class OrdemServicoRelatorioComponent implements OnInit {
       },
 
       error: erro => {
-        this.erro = errorMessage(erro);
+        if (!this.ordem) {
+          this.erro = errorMessage(erro);
+        }
+
         this.carregando = false;
       }
     });

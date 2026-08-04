@@ -208,7 +208,10 @@ export class OrdensServicoComponent implements OnInit {
   }
 
   visualizarRelatorio(ordem: OrdemServico): void {
-    this.router.navigate(['/ordens-servico', ordem.id, 'relatorio']);
+    this.router.navigate(
+      ['/ordens-servico', ordem.id, 'relatorio'],
+      { state: { ordem } }
+    );
   }
 
   iniciar(id: number): void {
