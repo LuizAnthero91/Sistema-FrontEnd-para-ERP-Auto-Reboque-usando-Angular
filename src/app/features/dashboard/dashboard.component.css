@@ -39,9 +39,10 @@
 }
 
 .metric strong {
-  font-size: 26px;
+  font-size: clamp(21px, 2.4vw, 26px);
   color: var(--primary);
   line-height: 1;
+  overflow-wrap: anywhere;
 }
 
 .metric strong.negative {
@@ -67,6 +68,11 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
+  min-width: 0;
+}
+
+.panel-heading > div {
+  min-width: 0;
 }
 
 .panel-heading h2 {
@@ -304,6 +310,7 @@
 
   .panel-heading {
     display: grid;
+    gap: 10px;
   }
 
   .chart-wrap {
@@ -312,6 +319,7 @@
   }
 
   .profit-badge {
+    min-width: 0;
     width: 100%;
     text-align: left;
   }
@@ -338,5 +346,21 @@
 
   .expense-ranking strong {
     grid-row: auto;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 420px) {
+  .metric {
+    min-height: 98px;
+    padding: 16px;
+  }
+
+  .chart-panel {
+    padding: 12px;
+  }
+
+  .panel-heading > strong {
+    white-space: normal;
   }
 }

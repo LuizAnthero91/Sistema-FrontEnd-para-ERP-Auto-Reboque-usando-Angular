@@ -13,7 +13,7 @@
 
 .login-card {
   width: min(1040px, 100%);
-  min-height: 620px;
+  min-height: min(620px, calc(100dvh - 112px));
   display: grid;
   grid-template-columns: minmax(0, 1.12fr) minmax(360px, .88fr);
   overflow: hidden;
@@ -173,12 +173,14 @@
 
 @media (max-width: 520px) {
   .login-page {
-    padding: 14px;
+    place-items: start center;
+    padding: 12px;
+    gap: 12px;
   }
 
   .login-hero {
-    min-height: 280px;
-    padding: 24px;
+    min-height: 220px;
+    padding: 22px;
   }
 
   .login-hero::after {
@@ -186,10 +188,24 @@
   }
 
   .login-hero h1 {
-    font-size: 32px;
+    font-size: 30px;
   }
 
   .login-form {
-    padding: 24px;
+    padding: 22px;
+  }
+}
+
+@media (max-width: 380px), (max-height: 680px) {
+  .login-hero {
+    min-height: 180px;
+  }
+
+  .login-hero p {
+    line-height: 1.45;
+  }
+
+  .login-form {
+    gap: 12px;
   }
 }

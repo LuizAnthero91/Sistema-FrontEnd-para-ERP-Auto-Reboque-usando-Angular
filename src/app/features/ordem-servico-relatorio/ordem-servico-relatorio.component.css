@@ -302,12 +302,17 @@
 
   .documento-os {
     width: 100%;
+    max-width: 100%;
     min-height: auto;
     padding: 18px;
   }
 
   .cabecalho {
     flex-direction: column;
+  }
+
+  .marca {
+    align-items: flex-start;
   }
 
   .numero-os {
@@ -328,6 +333,26 @@
   .assinaturas {
     grid-template-columns: 1fr;
     gap: 55px;
+  }
+}
+
+@media screen and (max-width: 440px) {
+  .toolbar {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .marca {
+    display: grid;
+  }
+
+  .empresa-identidade h1 {
+    font-size: 21px;
+  }
+
+  .valores div {
+    display: grid;
+    gap: 4px;
   }
 }
 

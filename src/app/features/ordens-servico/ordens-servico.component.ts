@@ -37,6 +37,7 @@ export class OrdensServicoComponent implements OnInit {
   readonly label = label;
   readonly tipoOptions = tipoServicoOptions;
   readonly statusOptions = statusOrdemOptions;
+  readonly anoMaximoVeiculo = new Date().getFullYear() + 1;
 
   form = this.fb.group({
     clienteId: [null as number | null, Validators.required],
@@ -44,20 +45,20 @@ export class OrdensServicoComponent implements OnInit {
     motoristaId: [null as number | null],
     tipoServico: ['REMOCAO_VEICULO_LEVE', Validators.required],
     status: [null as string | null],
-    origem: ['', Validators.required],
-    destino: [''],
+    origem: ['', [Validators.required, Validators.maxLength(200)]],
+    destino: ['', Validators.maxLength(200)],
     kmEstimado: [null as number | null],
     kmReal: [null as number | null],
     valorCobrado: [0],
     custoEstimado: [0],
-    observacao: [''],
+    observacao: ['', Validators.maxLength(1000)],
     veiculoClientePlaca: ['', [Validators.maxLength(10), Validators.pattern(/^[A-Za-z0-9-]{0,10}$/)]],
-    veiculoClienteMarca: ['', Validators.maxLength(80)],
-    veiculoClienteModelo: ['', Validators.maxLength(100)],
-    veiculoClienteCor: ['', Validators.maxLength(50)],
-    veiculoClienteAno: [null as number | null, [Validators.min(1900), Validators.max(2100)]],
-    veiculoClienteKm: [null as number | null, Validators.min(0)],
-    veiculoClienteObservacao: ['', Validators.maxLength(1000)]
+    veiculoClienteMarca: ['', Validators.maxLength(50)],
+    veiculoClienteModelo: ['', Validators.maxLength(80)],
+    veiculoClienteCor: ['', Validators.maxLength(30)],
+    veiculoClienteAno: [null as number | null, [Validators.min(1900), Validators.max(this.anoMaximoVeiculo)]],
+    veiculoClienteKm: [null as number | null, [Validators.min(0), Validators.max(9999999)]],
+    veiculoClienteObservacao: ['', Validators.maxLength(500)]
   });
 
   ngOnInit(): void {
@@ -188,6 +189,9 @@ export class OrdensServicoComponent implements OnInit {
       veiculoClienteMarca: valorFormulario.veiculoClienteMarca?.trim(),
       veiculoClienteModelo: valorFormulario.veiculoClienteModelo?.trim(),
       veiculoClienteCor: valorFormulario.veiculoClienteCor?.trim(),
+      origem: valorFormulario.origem?.trim(),
+      destino: valorFormulario.destino?.trim(),
+      observacao: valorFormulario.observacao?.trim(),
       veiculoClienteObservacao: valorFormulario.veiculoClienteObservacao?.trim()
     }) as unknown as OrdemServicoRequest;
 
