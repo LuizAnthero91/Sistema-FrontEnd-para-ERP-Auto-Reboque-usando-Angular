@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { UsuariosComponent } from './features/usuarios/usuarios.component';
 
 import { authGuard } from './core/guards/auth.guard';
 import { permissionGuard } from './core/guards/permission.guard';
@@ -46,6 +47,14 @@ export const routes: Routes = [
     canActivate: [authGuard],
 
     children: [
+      
+      {
+        path: 'usuarios',
+        component: UsuariosComponent,
+        canActivate: [permissionGuard],
+        data: { permissao: 'USUARIO_VISUALIZAR' }
+      },
+
       {
         path: '',
         pathMatch: 'full',

@@ -25,6 +25,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
   sessaoCarregada = false;
   menuOpen = false;
   links: MenuLink[] = [
+    { label: 'Usuários',  icon: '👥',  path: '/usuarios', permissao: 'USUARIO_VISUALIZAR'},
     { label: 'Dashboard', icon: '📊', path: '/dashboard' },
     { label: 'Veículos', icon: '🚚', path: '/veiculos', permissao: 'VEICULO_VISUALIZAR' },
     { label: 'Motoristas', icon: '👷', path: '/motoristas' },
@@ -33,7 +34,9 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     { label: 'Financeiro', icon: '💰', path: '/financeiro', permissao: 'FINANCEIRO_VISUALIZAR' },
     { label: 'Abastecimentos', icon: '⛽', path: '/abastecimentos' },
     { label: 'Manutenções', icon: '🔧', path: '/manutencoes' },
-    { label: 'Documentos', icon: '📄', path: '/documentos-veiculos' }
+    { label: 'Documentos', icon: '📄', path: '/documentos-veiculos' },
+    { label: 'Financeiro', icon: '💰', path: '/financeiro', permissao: 'FINANCEIRO_VISUALIZAR'}
+       
   ];
 
   get linksVisiveis(): MenuLink[] {

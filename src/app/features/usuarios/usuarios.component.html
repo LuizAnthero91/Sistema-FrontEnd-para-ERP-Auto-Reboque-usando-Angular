@@ -1,0 +1,268 @@
+<section class="pagina">
+
+  <header class="cabecalho">
+
+    <div>
+      <h1>Usuários</h1>
+
+      <p>
+        Gerencie os usuários que possuem
+        acesso ao sistema.
+      </p>
+    </div>
+
+    <button
+      *ngIf="podeCriar"
+      class="btn-primary"
+      type="button"
+      (click)="abrirFormulario()"
+    >
+      + Novo usuário
+    </button>
+
+  </header>
+
+
+  <div
+    *ngIf="mensagem"
+    class="alert sucesso"
+  >
+    {{ mensagem }}
+  </div>
+
+  <div
+    *ngIf="erro"
+    class="alert erro"
+  >
+    {{ erro }}
+  </div>
+
+
+  <!-- FORMULÁRIO -->
+
+  <section
+    *ngIf="mostrarFormulario"
+    class="card formulario"
+  >
+
+    <div class="form-header">
+
+      <h2>Novo usuário</h2>
+
+      <button
+        type="button"
+        class="fechar"
+        (click)="fecharFormulario()"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="grid">
+
+      <label>
+
+        Nome
+
+        <input
+          type="text"
+          [(ngModel)]="form.nome"
+          placeholder="Nome completo"
+        >
+
+      </label>
+
+
+      <label>
+
+        E-mail
+
+        <input
+          type="email"
+          [(ngModel)]="form.email"
+          placeholder="usuario@empresa.com"
+        >
+
+      </label>
+
+
+      <label>
+
+        Senha inicial
+
+        <input
+          type="password"
+          [(ngModel)]="form.senha"
+          placeholder="Mínimo 8 caracteres"
+        >
+
+      </label>
+
+
+      <label>
+
+        Perfil
+
+        <select
+          [(ngModel)]="form.perfilId"
+        >
+
+          <option [ngValue]="0">
+            Selecione...
+          </option>
+
+          <option
+            *ngFor="let perfil of perfis"
+            [ngValue]="perfil.id"
+          >
+            {{ perfil.nome }}
+          </option>
+
+        </select>
+
+      </label>
+
+    </div>
+
+
+    <div class="acoes-form">
+
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="fecharFormulario()"
+      >
+        Cancelar
+      </button>
+
+      <button
+        type="button"
+        class="btn-primary"
+        [disabled]="salvando"
+        (click)="cadastrar()"
+      >
+        {{ salvando ? 'Salvando...' : 'Cadastrar usuário' }}
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- LISTA -->
+
+  <section class="card">
+
+    <div
+      *ngIf="carregando"
+      class="estado"
+    >
+      Carregando usuários...
+    </div>
+
+
+    <div
+      *ngIf="!carregando && usuarios.length === 0"
+      class="estado"
+    >
+      Nenhum usuário cadastrado.
+    </div>
+
+
+    <div
+      *ngIf="!carregando && usuarios.length > 0"
+      class="tabela-wrapper"
+    >
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>Perfil</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr
+            *ngFor="let usuario of usuarios"
+          >
+
+            <td>
+              {{ usuario.nome }}
+            </td>
+
+            <td>
+              {{ usuario.email }}
+            </td>
+
+            <td>
+              <span class="perfil">
+                {{ usuario.perfilNome }}
+              </span>
+            </td>
+
+            <td>
+
+              <span
+                class="status"
+                [class.ativo]="usuario.ativo"
+                [class.inativo]="!usuario.ativo"
+              >
+                {{
+                  usuario.ativo
+                    ? 'Ativo'
+                    : 'Inativo'
+                }}
+              </span>
+
+            </td>
+
+            <td>
+
+              <button
+                *ngIf="
+                  usuario.ativo &&
+                  podeDesativar
+                "
+                class="btn-danger"
+                type="button"
+                (click)="desativar(usuario)"
+              >
+                Desativar
+              </button>
+
+
+              <button
+                *ngIf="
+                  !usuario.ativo &&
+                  podeEditar
+                "
+                class="btn-secondary"
+                type="button"
+                (click)="ativar(usuario)"
+              >
+                Ativar
+              </button>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</section>

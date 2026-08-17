@@ -516,3 +516,25 @@ export interface DashboardFinanceiroMensal {
   despesas: number;
   lucroBruto: number;
 }
+export interface UsuarioSistema {
+  id: number;
+  nome: string;
+  email: string;
+  ativo: boolean;
+  perfilId: number;
+  perfilNome: string;
+}
+
+export interface UsuarioCadastroRequest {
+  nome: string;
+  email: string;
+  senha: string;
+  perfilId: number;
+}
+
+export interface PerfilSistema {
+  id: number;
+  nome: string;
+  descricao?: string;
+  ativo: boolean;
+}
