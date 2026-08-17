@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { authGuard } from './core/guards/auth.guard';
+import { permissionGuard } from './core/guards/permission.guard';
 
 import { AdminLayoutComponent } from './layout/admin-layout/admin-layout.component';
 
@@ -27,7 +28,10 @@ export const routes: Routes = [
    */
   {
     path: 'ordens-servico/:id/relatorio',
-    canActivate: [authGuard],
+    canActivate: [authGuard, permissionGuard],
+    data: {
+      permissao: 'OS_VISUALIZAR'
+    },
     loadComponent: () =>
       import(
         './features/ordem-servico-relatorio/ordem-servico-relatorio.component'
@@ -40,44 +44,70 @@ export const routes: Routes = [
     path: '',
     component: AdminLayoutComponent,
     canActivate: [authGuard],
+
     children: [
       {
         path: '',
         pathMatch: 'full',
         redirectTo: 'dashboard'
       },
+
       {
         path: 'dashboard',
         component: DashboardComponent
       },
+
       {
         path: 'veiculos',
-        component: VeiculosComponent
+        component: VeiculosComponent,
+        canActivate: [permissionGuard],
+        data: {
+          permissao: 'VEICULO_VISUALIZAR'
+        }
       },
+
       {
         path: 'motoristas',
         component: MotoristasComponent
       },
+
       {
         path: 'clientes',
-        component: ClientesComponent
+        component: ClientesComponent,
+        canActivate: [permissionGuard],
+        data: {
+          permissao: 'CLIENTE_VISUALIZAR'
+        }
       },
+
       {
         path: 'ordens-servico',
-        component: OrdensServicoComponent
+        component: OrdensServicoComponent,
+        canActivate: [permissionGuard],
+        data: {
+          permissao: 'OS_VISUALIZAR'
+        }
       },
+
       {
         path: 'financeiro',
-        component: FinanceiroComponent
+        component: FinanceiroComponent,
+        canActivate: [permissionGuard],
+        data: {
+          permissao: 'FINANCEIRO_VISUALIZAR'
+        }
       },
+
       {
         path: 'abastecimentos',
         component: AbastecimentosComponent
       },
+
       {
         path: 'manutencoes',
         component: ManutencoesComponent
       },
+
       {
         path: 'documentos-veiculos',
         component: DocumentosVeiculosComponent

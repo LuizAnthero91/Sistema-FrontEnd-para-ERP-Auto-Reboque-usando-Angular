@@ -30,11 +30,32 @@ export interface LoginResponse {
   expiresIn?: number;
 }
 
+export type PermissaoCodigo =
+  | 'OS_VISUALIZAR'
+  | 'OS_CRIAR'
+  | 'OS_EDITAR'
+  | 'OS_CANCELAR'
+  | 'CLIENTE_VISUALIZAR'
+  | 'CLIENTE_CRIAR'
+  | 'CLIENTE_EDITAR'
+  | 'VEICULO_VISUALIZAR'
+  | 'VEICULO_CRIAR'
+  | 'VEICULO_EDITAR'
+  | 'FINANCEIRO_VISUALIZAR'
+  | 'FINANCEIRO_EDITAR'
+  | 'USUARIO_VISUALIZAR'
+  | 'USUARIO_CRIAR'
+  | 'USUARIO_EDITAR'
+  | 'USUARIO_DESATIVAR'
+  | 'PERFIL_VISUALIZAR'
+  | 'PERFIL_GERENCIAR';
+
 export interface UsuarioLogado {
   id: number;
   nome: string;
   email: string;
   perfil: string;
+  permissoes: PermissaoCodigo[];
 }
 
 /* =========================================================

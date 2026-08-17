@@ -22,7 +22,7 @@
 
     <nav class="nav">
       <a
-        *ngFor="let link of links"
+        *ngFor="let link of linksVisiveis"
         [routerLink]="link.path"
         routerLinkActive="active"
         (click)="fecharMenu()">

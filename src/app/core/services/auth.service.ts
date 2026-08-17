@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, map, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { LoginRequest, LoginResponse, UsuarioLogado } from '../models/api.models';
+import { LoginRequest, LoginResponse, PermissaoCodigo, UsuarioLogado } from '../models/api.models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -45,6 +45,19 @@ export class AuthService {
   getUsuarioLocal(): UsuarioLogado | null {
     const raw = localStorage.getItem(this.userKey);
     return raw ? JSON.parse(raw) as UsuarioLogado : null;
+  }
+
+  temPermissao(permissao: PermissaoCodigo): boolean {
+    const usuario = this.getUsuarioLocal();
+    return usuario?.permissoes?.includes(permissao) ?? false;
+  }
+
+  temAlgumaPermissao(permissoes: PermissaoCodigo[]): boolean {
+    return permissoes.some(permissao => this.temPermissao(permissao));
+  }
+
+  isAdmin(): boolean {
+    return this.getUsuarioLocal()?.perfil === 'ADMIN';
   }
 
   setToken(token: string): void { localStorage.setItem(this.tokenKey, token); }

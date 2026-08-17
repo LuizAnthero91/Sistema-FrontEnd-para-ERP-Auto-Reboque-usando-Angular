@@ -1,8 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { PermissaoCodigo, UsuarioLogado } from '../../core/models/api.models';
 import { AuthService } from '../../core/services/auth.service';
-import { UsuarioLogado } from '../../core/models/api.models';
+
+interface MenuLink {
+  label: string;
+  icon: string;
+  path: string;
+  permissao?: PermissaoCodigo;
+}
 
 @Component({
   selector: 'app-admin-layout',
@@ -17,17 +24,22 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
   user: UsuarioLogado | null = null;
   sessaoCarregada = false;
   menuOpen = false;
-  links = [
+  links: MenuLink[] = [
     { label: 'Dashboard', icon: '📊', path: '/dashboard' },
-    { label: 'Veículos', icon: '🚚', path: '/veiculos' },
+    { label: 'Veículos', icon: '🚚', path: '/veiculos', permissao: 'VEICULO_VISUALIZAR' },
     { label: 'Motoristas', icon: '👷', path: '/motoristas' },
-    { label: 'Clientes', icon: '🤝', path: '/clientes' },
-    { label: 'Ordens de Serviço', icon: '🧾', path: '/ordens-servico' },
-    { label: 'Financeiro', icon: '💰', path: '/financeiro' },
+    { label: 'Clientes', icon: '🤝', path: '/clientes', permissao: 'CLIENTE_VISUALIZAR' },
+    { label: 'Ordens de Serviço', icon: '🧾', path: '/ordens-servico', permissao: 'OS_VISUALIZAR' },
+    { label: 'Financeiro', icon: '💰', path: '/financeiro', permissao: 'FINANCEIRO_VISUALIZAR' },
     { label: 'Abastecimentos', icon: '⛽', path: '/abastecimentos' },
     { label: 'Manutenções', icon: '🔧', path: '/manutencoes' },
     { label: 'Documentos', icon: '📄', path: '/documentos-veiculos' }
   ];
+
+  get linksVisiveis(): MenuLink[] {
+    return this.links.filter(link => !link.permissao || this.auth.temPermissao(link.permissao));
+  }
+
   ngOnInit(): void {
     this.auth.me().subscribe({
       next: user => {
