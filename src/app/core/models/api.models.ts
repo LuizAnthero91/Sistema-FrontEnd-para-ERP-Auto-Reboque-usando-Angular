@@ -12,6 +12,16 @@ export interface ApiErrorResponse {
   campos: ApiErrorCampo[];
 }
 
+export interface PaginaResponse<T> {
+  content: T[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  first: boolean;
+  last: boolean;
+}
+
 /* =========================================================
    AUTENTICAÇÃO
 ========================================================= */

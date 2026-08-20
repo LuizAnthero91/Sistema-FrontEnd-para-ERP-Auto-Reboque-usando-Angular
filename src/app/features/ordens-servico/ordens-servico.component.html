@@ -529,6 +529,33 @@
       Nenhuma ordem cadastrada.
     </div>
 
+    <div
+      class="actions"
+      style="justify-content: flex-end; margin-top: 16px"
+      *ngIf="totalElements > 0">
+
+      <button
+        class="btn btn-secondary"
+        type="button"
+        (click)="paginaAnterior()"
+        [disabled]="first">
+        Anterior
+      </button>
+
+      <span>
+        Pagina {{ page + 1 }} de {{ totalPages }}
+      </span>
+
+      <button
+        class="btn btn-secondary"
+        type="button"
+        (click)="proximaPagina()"
+        [disabled]="last">
+        Proxima
+      </button>
+
+    </div>
+
   </div>
 
 </div>

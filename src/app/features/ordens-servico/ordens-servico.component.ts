@@ -33,6 +33,12 @@ export class OrdensServicoComponent implements OnInit {
   mostrarForm = false;
   erro = '';
   sucesso = '';
+  page = 0;
+  size = 10;
+  totalElements = 0;
+  totalPages = 0;
+  first = true;
+  last = false;
 
   readonly label = label;
   readonly tipoOptions = tipoServicoOptions;
@@ -70,13 +76,37 @@ export class OrdensServicoComponent implements OnInit {
 
   carregar(): void {
     this.erro = '';
-    this.service.listar().subscribe({
+    this.service.listar(this.page, this.size).subscribe({
       next: resposta => {
-        this.itens = resposta;
+        this.itens = resposta.content;
+        this.page = resposta.page;
+        this.size = resposta.size;
+        this.totalElements = resposta.totalElements;
+        this.totalPages = resposta.totalPages;
+        this.first = resposta.first;
+        this.last = resposta.last;
         this.cdr.markForCheck();
       },
       error: erro => this.mostrarErro(erro)
     });
+  }
+
+  paginaAnterior(): void {
+    if (this.first) {
+      return;
+    }
+
+    this.page--;
+    this.carregar();
+  }
+
+  proximaPagina(): void {
+    if (this.last) {
+      return;
+    }
+
+    this.page++;
+    this.carregar();
   }
 
   carregarClientes(): void {
@@ -279,6 +309,9 @@ export class OrdensServicoComponent implements OnInit {
     this.service.deletar(id).subscribe({
       next: () => {
         this.sucesso = 'Ordem de servico excluida.';
+        if (this.itens.length === 1 && this.page > 0) {
+          this.page--;
+        }
         this.atualizarLista();
       },
       error: erro => this.mostrarErro(erro)
