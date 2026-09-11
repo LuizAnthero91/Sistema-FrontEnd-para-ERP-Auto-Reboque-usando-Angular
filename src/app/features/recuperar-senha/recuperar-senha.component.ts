@@ -12,13 +12,8 @@ import {
 } from '@angular/forms';
 
 import {
-  Router,
   RouterLink
 } from '@angular/router';
-
-import {
-  switchMap
-} from 'rxjs';
 
 import {
   AuthService
@@ -29,7 +24,8 @@ import {
 } from '../../shared/form-utils';
 
 @Component({
-  selector: 'app-login',
+  selector:
+    'app-recuperar-senha',
 
   standalone: true,
 
@@ -40,12 +36,12 @@ import {
   ],
 
   templateUrl:
-    './login.component.html',
+    './recuperar-senha.component.html',
 
   styleUrl:
-    './login.component.css'
+    './recuperar-senha.component.css'
 })
-export class LoginComponent {
+export class RecuperarSenhaComponent {
 
   private readonly fb =
     inject(FormBuilder);
@@ -53,12 +49,11 @@ export class LoginComponent {
   private readonly auth =
     inject(AuthService);
 
-  private readonly router =
-    inject(Router);
-
   loading = false;
 
   erro = '';
+
+  mensagem = '';
 
   form = this.fb.group({
 
@@ -68,19 +63,12 @@ export class LoginComponent {
         Validators.required,
         Validators.email
       ]
-    ],
-
-    senha: [
-      '',
-      [
-        Validators.required
-      ]
     ]
 
   });
 
 
-  entrar(): void {
+  enviar(): void {
 
     if (this.form.invalid) {
 
@@ -93,28 +81,28 @@ export class LoginComponent {
 
     this.erro = '';
 
+    this.mensagem = '';
+
     const value =
       this.form.getRawValue();
 
+    const email =
+      value.email!;
+
     this.auth
-      .login({
-        email: value.email!,
-        senha: value.senha!
-      })
-      .pipe(
-
-        switchMap(
-          () => this.auth.me()
-        )
-
-      )
+      .recuperarSenha(email)
       .subscribe({
 
-        next: () => {
+        next: response => {
 
-          this.router.navigate([
-            '/dashboard'
-          ]);
+          this.mensagem =
+            response.mensagem;
+
+          /*
+           * Limpamos o formulário
+           * depois do envio.
+           */
+          this.form.reset();
 
         },
 
@@ -124,11 +112,13 @@ export class LoginComponent {
             errorMessage(err);
 
           this.loading = false;
+
         },
 
         complete: () => {
 
           this.loading = false;
+
         }
 
       });

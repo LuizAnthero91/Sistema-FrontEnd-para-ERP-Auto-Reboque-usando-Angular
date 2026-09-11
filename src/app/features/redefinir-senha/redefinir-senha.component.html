@@ -1,0 +1,152 @@
+<section class="auth-page">
+
+  <div class="auth-card card">
+
+    <div class="auth-hero">
+
+      <div class="auth-hero-content">
+
+        <span class="hero-kicker">
+          Segurança da conta
+        </span>
+
+        <h1>
+          Crie uma nova senha
+        </h1>
+
+        <p>
+          Defina uma nova senha
+          para acessar o ERP
+          Auto Reboque Torá.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <form
+      [formGroup]="form"
+      (ngSubmit)="redefinir()"
+      class="auth-form"
+    >
+
+      <h2>
+        Redefinir senha
+      </h2>
+
+
+      <p class="muted">
+        Sua nova senha deve possuir
+        pelo menos 8 caracteres.
+      </p>
+
+
+      <div
+        class="alert error"
+        *ngIf="tokenInvalido"
+      >
+
+        Link de recuperação inválido
+        ou incompleto.
+
+      </div>
+
+
+      <div
+        class="alert error"
+        *ngIf="erro"
+      >
+
+        {{ erro }}
+
+      </div>
+
+
+      <div
+        class="alert success"
+        *ngIf="sucesso"
+      >
+
+        Senha alterada com sucesso.
+
+        <br>
+
+        Redirecionando para o login...
+
+      </div>
+
+
+      <ng-container
+        *ngIf="!tokenInvalido"
+      >
+
+        <div>
+
+          <label for="novaSenha">
+            Nova senha
+          </label>
+
+          <input
+            id="novaSenha"
+            class="input"
+            type="password"
+            formControlName="novaSenha"
+            placeholder="Digite a nova senha"
+            autocomplete="new-password"
+          >
+
+        </div>
+
+
+        <div>
+
+          <label for="confirmarSenha">
+            Confirmar nova senha
+          </label>
+
+          <input
+            id="confirmarSenha"
+            class="input"
+            type="password"
+            formControlName="confirmarSenha"
+            placeholder="Digite novamente"
+            autocomplete="new-password"
+          >
+
+        </div>
+
+
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="
+            loading ||
+            sucesso
+          "
+        >
+
+          {{
+            loading
+              ? 'Alterando...'
+              : 'Alterar senha'
+          }}
+
+        </button>
+
+      </ng-container>
+
+
+      <div class="back-login">
+
+        <a routerLink="/login">
+          Voltar para o login
+        </a>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</section>

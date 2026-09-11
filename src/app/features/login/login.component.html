@@ -1,31 +1,140 @@
 <section class="login-page">
+
   <div class="login-card card">
+
     <div class="login-hero">
+
       <div class="login-hero-content">
-        <span class="hero-kicker">Operacao em tempo real</span>
-        <h1>ERP Auto Reboque Torá</h1>
-        <p>Controle frota, ordens de servico, financeiro, abastecimentos, manutencoes e documentos em uma unica tela.</p>
+
+        <span class="hero-kicker">
+          Operacao em tempo real
+        </span>
+
+        <h1>
+          ERP Auto Reboque Torá
+        </h1>
+
+        <p>
+          Controle frota, ordens de servico,
+          financeiro, abastecimentos,
+          manutencoes e documentos em uma
+          unica tela.
+        </p>
+
       </div>
+
     </div>
 
-    <form [formGroup]="form" (ngSubmit)="entrar()" class="login-form">
-      <h2>Entrar no sistema</h2>
-      <p class="muted"></p>
-      <div class="alert error" *ngIf="erro">{{ erro }}</div>
-      <div>
-        <label>Email</label>
-        <input class="input" type="email" formControlName="email" placeholder="Digite seu e-mail">
+
+    <form
+      [formGroup]="form"
+      (ngSubmit)="entrar()"
+      class="login-form"
+    >
+
+      <h2>
+        Entrar no sistema
+      </h2>
+
+      <p class="muted">
+        Acesse sua conta para continuar.
+      </p>
+
+
+      <div
+        class="alert error"
+        *ngIf="erro"
+      >
+        {{ erro }}
       </div>
+
+
       <div>
-        <label>Senha</label>
-        <input class="input" type="password" formControlName="senha" placeholder="Digite sua senha">
+
+        <label for="email">
+          Email
+        </label>
+
+        <input
+          id="email"
+          class="input"
+          type="email"
+          formControlName="email"
+          placeholder="Digite seu e-mail"
+          autocomplete="email"
+        >
+
       </div>
-      <button class="btn btn-primary" type="submit" [disabled]="loading">{{ loading ? 'Entrando...' : 'Entrar' }}</button>
+
+
+      <div>
+
+        <label for="senha">
+          Senha
+        </label>
+
+        <input
+          id="senha"
+          class="input"
+          type="password"
+          formControlName="senha"
+          placeholder="Digite sua senha"
+          autocomplete="current-password"
+        >
+
+      </div>
+
+
+      <div class="forgot-password">
+
+        <a
+          routerLink="/recuperar-senha"
+        >
+          Esqueci minha senha
+        </a>
+
+      </div>
+
+
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="loading"
+      >
+
+        {{
+          loading
+            ? 'Entrando...'
+            : 'Entrar'
+        }}
+
+      </button>
+
     </form>
+
   </div>
 
+
   <footer class="login-footer">
-    <span>ERP Auto Reboque Torá 2026</span>
-    <span><a href="https://lcdigitaltec.com.br" target="_blank" rel="noopener noreferrer">LCDigitalTec.com.br</a> todos os direitos reservados</span>
+
+    <span>
+      ERP Auto Reboque Torá 2026
+    </span>
+
+    <span>
+
+      <a
+        href="https://lcdigitaltec.com.br"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        LCDigitalTec.com.br
+      </a>
+
+      todos os direitos reservados
+
+    </span>
+
   </footer>
+
 </section>

@@ -1,131 +1,318 @@
 import { Routes } from '@angular/router';
-import { UsuariosComponent } from './features/usuarios/usuarios.component';
 
-import { authGuard } from './core/guards/auth.guard';
-import { permissionGuard } from './core/guards/permission.guard';
+import {
+  UsuariosComponent
+} from './features/usuarios/usuarios.component';
 
-import { AdminLayoutComponent } from './layout/admin-layout/admin-layout.component';
+import {
+  authGuard
+} from './core/guards/auth.guard';
 
-import { LoginComponent } from './features/login/login.component';
-import { DashboardComponent } from './features/dashboard/dashboard.component';
-import { VeiculosComponent } from './features/veiculos/veiculos.component';
-import { MotoristasComponent } from './features/motoristas/motoristas.component';
-import { ClientesComponent } from './features/clientes/clientes.component';
-import { OrdensServicoComponent } from './features/ordens-servico/ordens-servico.component';
-import { FinanceiroComponent } from './features/financeiro/financeiro.component';
-import { AbastecimentosComponent } from './features/abastecimentos/abastecimentos.component';
-import { ManutencoesComponent } from './features/manutencoes/manutencoes.component';
-import { DocumentosVeiculosComponent } from './features/documentos-veiculos/documentos-veiculos.component';
+import {
+  permissionGuard
+} from './core/guards/permission.guard';
 
-export const routes: Routes = [
+import {
+  AdminLayoutComponent
+} from './layout/admin-layout/admin-layout.component';
+
+import {
+  LoginComponent
+} from './features/login/login.component';
+
+import {
+  DashboardComponent
+} from './features/dashboard/dashboard.component';
+
+import {
+  VeiculosComponent
+} from './features/veiculos/veiculos.component';
+
+import {
+  MotoristasComponent
+} from './features/motoristas/motoristas.component';
+
+import {
+  ClientesComponent
+} from './features/clientes/clientes.component';
+
+import {
+  OrdensServicoComponent
+} from './features/ordens-servico/ordens-servico.component';
+
+import {
+  FinanceiroComponent
+} from './features/financeiro/financeiro.component';
+
+import {
+  AbastecimentosComponent
+} from './features/abastecimentos/abastecimentos.component';
+
+import {
+  ManutencoesComponent
+} from './features/manutencoes/manutencoes.component';
+
+import {
+  DocumentosVeiculosComponent
+} from './features/documentos-veiculos/documentos-veiculos.component';
+
+
+export const routes:
+  Routes = [
+
+  /*
+   * =========================
+   * ROTAS PÚBLICAS
+   * =========================
+   */
+
   {
     path: 'login',
     component: LoginComponent
   },
 
-  /*
-   * Relatório fora do AdminLayout.
-   * Assim menu lateral e cabeçalho não aparecem na impressão.
-   */
+
   {
-    path: 'ordens-servico/:id/relatorio',
-    canActivate: [authGuard, permissionGuard],
-    data: {
-      permissao: 'OS_VISUALIZAR'
-    },
+    path: 'recuperar-senha',
+
     loadComponent: () =>
       import(
-        './features/ordem-servico-relatorio/ordem-servico-relatorio.component'
-      ).then(
-        componente => componente.OrdemServicoRelatorioComponent
+        './features/recuperar-senha/recuperar-senha.component'
+      )
+      .then(
+        modulo =>
+          modulo.RecuperarSenhaComponent
       )
   },
 
+
+  {
+    path: 'redefinir-senha',
+
+    loadComponent: () =>
+      import(
+        './features/redefinir-senha/redefinir-senha.component'
+      )
+      .then(
+        modulo =>
+          modulo.RedefinirSenhaComponent
+      )
+  },
+
+
+  /*
+   * =========================
+   * RELATÓRIO
+   * =========================
+   *
+   * Fica fora do AdminLayout.
+   * Menu e cabeçalho não aparecem
+   * durante impressão.
+   */
+
+  {
+    path:
+      'ordens-servico/:id/relatorio',
+
+    canActivate: [
+      authGuard,
+      permissionGuard
+    ],
+
+    data: {
+      permissao:
+        'OS_VISUALIZAR'
+    },
+
+    loadComponent: () =>
+      import(
+        './features/ordem-servico-relatorio/ordem-servico-relatorio.component'
+      )
+      .then(
+        componente =>
+          componente
+            .OrdemServicoRelatorioComponent
+      )
+  },
+
+
+  /*
+   * =========================
+   * ÁREA AUTENTICADA
+   * =========================
+   */
+
   {
     path: '',
-    component: AdminLayoutComponent,
-    canActivate: [authGuard],
+
+    component:
+      AdminLayoutComponent,
+
+    canActivate: [
+      authGuard
+    ],
 
     children: [
-      
+
       {
         path: 'usuarios',
-        component: UsuariosComponent,
-        canActivate: [permissionGuard],
-        data: { permissao: 'USUARIO_VISUALIZAR' }
+
+        component:
+          UsuariosComponent,
+
+        canActivate: [
+          permissionGuard
+        ],
+
+        data: {
+          permissao:
+            'USUARIO_VISUALIZAR'
+        }
       },
+
 
       {
         path: '',
-        pathMatch: 'full',
-        redirectTo: 'dashboard'
+
+        pathMatch:
+          'full',
+
+        redirectTo:
+          'dashboard'
       },
 
-      {
-        path: 'dashboard',
-        component: DashboardComponent
-      },
 
       {
-        path: 'veiculos',
-        component: VeiculosComponent,
-        canActivate: [permissionGuard],
+        path:
+          'dashboard',
+
+        component:
+          DashboardComponent
+      },
+
+
+      {
+        path:
+          'veiculos',
+
+        component:
+          VeiculosComponent,
+
+        canActivate: [
+          permissionGuard
+        ],
+
         data: {
-          permissao: 'VEICULO_VISUALIZAR'
+          permissao:
+            'VEICULO_VISUALIZAR'
         }
       },
 
-      {
-        path: 'motoristas',
-        component: MotoristasComponent
-      },
 
       {
-        path: 'clientes',
-        component: ClientesComponent,
-        canActivate: [permissionGuard],
+        path:
+          'motoristas',
+
+        component:
+          MotoristasComponent
+      },
+
+
+      {
+        path:
+          'clientes',
+
+        component:
+          ClientesComponent,
+
+        canActivate: [
+          permissionGuard
+        ],
+
         data: {
-          permissao: 'CLIENTE_VISUALIZAR'
+          permissao:
+            'CLIENTE_VISUALIZAR'
         }
       },
 
+
       {
-        path: 'ordens-servico',
-        component: OrdensServicoComponent,
-        canActivate: [permissionGuard],
+        path:
+          'ordens-servico',
+
+        component:
+          OrdensServicoComponent,
+
+        canActivate: [
+          permissionGuard
+        ],
+
         data: {
-          permissao: 'OS_VISUALIZAR'
+          permissao:
+            'OS_VISUALIZAR'
         }
       },
 
+
       {
-        path: 'financeiro',
-        component: FinanceiroComponent,
-        canActivate: [permissionGuard],
+        path:
+          'financeiro',
+
+        component:
+          FinanceiroComponent,
+
+        canActivate: [
+          permissionGuard
+        ],
+
         data: {
-          permissao: 'FINANCEIRO_VISUALIZAR'
+          permissao:
+            'FINANCEIRO_VISUALIZAR'
         }
       },
 
-      {
-        path: 'abastecimentos',
-        component: AbastecimentosComponent
-      },
 
       {
-        path: 'manutencoes',
-        component: ManutencoesComponent
+        path:
+          'abastecimentos',
+
+        component:
+          AbastecimentosComponent
       },
 
+
       {
-        path: 'documentos-veiculos',
-        component: DocumentosVeiculosComponent
+        path:
+          'manutencoes',
+
+        component:
+          ManutencoesComponent
+      },
+
+
+      {
+        path:
+          'documentos-veiculos',
+
+        component:
+          DocumentosVeiculosComponent
       }
+
     ]
   },
 
+
+  /*
+   * =========================
+   * ROTA NÃO ENCONTRADA
+   * =========================
+   */
+
   {
     path: '**',
-    redirectTo: 'dashboard'
+
+    redirectTo:
+      'dashboard'
   }
+
 ];
