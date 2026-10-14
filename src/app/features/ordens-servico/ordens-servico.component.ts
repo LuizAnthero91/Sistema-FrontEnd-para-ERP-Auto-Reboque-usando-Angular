@@ -1,6 +1,7 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { OsImagensComponent } from '../../shared/os-imagens.component';
 import { Router } from '@angular/router';
 import { Cliente, Motorista, OrdemServico, OrdemServicoRequest, Veiculo } from '../../core/models/api.models';
 import { ClienteService } from '../../core/services/cliente.service';
@@ -13,7 +14,7 @@ import { label, statusOrdemOptions, tipoServicoOptions } from '../../shared/opti
 @Component({
   selector: 'app-ordens-servico',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CurrencyPipe],
+  imports: [CommonModule, ReactiveFormsModule, CurrencyPipe, OsImagensComponent],
   templateUrl: './ordens-servico.component.html'
 })
 export class OrdensServicoComponent implements OnInit {
@@ -24,6 +25,10 @@ export class OrdensServicoComponent implements OnInit {
   private readonly veiculoService = inject(VeiculoService);
   private readonly motoristaService = inject(MotoristaService);
   private readonly cdr = inject(ChangeDetectorRef);
+
+  @ViewChild(OsImagensComponent) fotos?: OsImagensComponent;
+  salvando = false;
+  sessaoFotos = 0;
 
   itens: OrdemServico[] = [];
   clientes: Cliente[] = [];
@@ -140,6 +145,8 @@ export class OrdensServicoComponent implements OnInit {
   }
 
   novo(): void {
+    if (this.salvando || this.fotos?.excluindo) return;
+    this.sessaoFotos++;
     this.editId = undefined;
     this.erro = '';
     this.sucesso = '';
@@ -171,6 +178,8 @@ export class OrdensServicoComponent implements OnInit {
   }
 
   editar(ordem: OrdemServico): void {
+    if (this.salvando || this.fotos?.excluindo) return;
+    this.sessaoFotos++;
     this.editId = ordem.id;
     this.erro = '';
     this.sucesso = '';
@@ -202,6 +211,7 @@ export class OrdensServicoComponent implements OnInit {
   }
 
   salvar(): void {
+    if (this.salvando || this.fotos?.excluindo || this.fotos?.carregando) return;
     this.erro = '';
     this.sucesso = '';
 
@@ -227,17 +237,34 @@ export class OrdensServicoComponent implements OnInit {
 
     const requisicao = this.editId ? this.service.atualizar(this.editId, payload) : this.service.criar(payload);
 
+    this.salvando = true;
     requisicao.subscribe({
       next: ordem => {
         this.sucesso = this.editId
           ? `OS ${ordem.numeroOs} atualizada com sucesso.`
           : `OS ${ordem.numeroOs} criada com sucesso.`;
-        this.mostrarForm = false;
-        this.editId = undefined;
-        this.carregar();
-        this.cdr.markForCheck();
+        this.editId = ordem.id;
+        const finalizar = (fotosEnviadas: boolean): void => {
+          this.salvando = false;
+          this.carregar();
+          if (fotosEnviadas) {
+            this.mostrarForm = false;
+            this.editId = undefined;
+          } else {
+            this.sucesso = `OS ${ordem.numeroOs} salva. H? fotos pendentes; clique em Salvar / enviar fotos para tentar novamente.`;
+          }
+          this.cdr.markForCheck();
+        };
+        if (this.fotos) {
+          this.fotos.enviar(ordem.id).subscribe(finalizar);
+        } else {
+          finalizar(true);
+        }
       },
-      error: erro => this.mostrarErro(erro)
+      error: erro => {
+        this.salvando = false;
+        this.mostrarErro(erro);
+      }
     });
   }
 
@@ -319,6 +346,7 @@ export class OrdensServicoComponent implements OnInit {
   }
 
   cancelarFormulario(): void {
+    if (this.salvando || this.fotos?.excluindo) return;
     this.mostrarForm = false;
     this.editId = undefined;
     this.erro = '';

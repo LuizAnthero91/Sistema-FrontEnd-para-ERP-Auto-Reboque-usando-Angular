@@ -15,6 +15,7 @@ import {
   Router
 } from '@angular/router';
 
+import { OsImagensComponent } from '../../shared/os-imagens.component';
 import { OrdemServico } from '../../core/models/api.models';
 import { OrdemServicoService } from '../../core/services/ordem-servico.service';
 import { errorMessage } from '../../shared/form-utils';
@@ -26,7 +27,8 @@ import { label } from '../../shared/options';
   imports: [
     CommonModule,
     CurrencyPipe,
-    DatePipe
+    DatePipe,
+    OsImagensComponent
   ],
   templateUrl: './ordem-servico-relatorio.component.html',
   styleUrl: './ordem-servico-relatorio.component.css'

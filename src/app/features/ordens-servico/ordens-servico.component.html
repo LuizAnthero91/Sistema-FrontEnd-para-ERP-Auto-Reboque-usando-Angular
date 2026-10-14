@@ -14,6 +14,7 @@
     <button
       class="btn btn-primary"
       type="button"
+      [disabled]="salvando || fotos?.excluindo"
       (click)="novo()">
       Nova OS
     </button>
@@ -37,6 +38,7 @@
     [formGroup]="form"
     (ngSubmit)="salvar()">
 
+    <fieldset [disabled]="salvando" style="border: 0; padding: 0; margin: 0; min-width: 0">
     <div class="form-grid">
 
       <!-- DADOS DO ATENDIMENTO -->
@@ -364,19 +366,25 @@
 
     </div>
 
+    </fieldset>
+
+    <app-os-imagens [ordemId]="editId" [sessao]="sessaoFotos" [bloqueado]="salvando"></app-os-imagens>
+
     <div
       class="actions"
       style="margin-top: 18px">
 
       <button
         class="btn btn-success"
-        type="submit">
-        Salvar
+        type="submit"
+        [disabled]="salvando || fotos?.excluindo || fotos?.carregando">
+        {{ salvando ? 'Salvando / enviando fotos?' : 'Salvar / enviar fotos' }}
       </button>
 
       <button
         class="btn btn-secondary"
         type="button"
+        [disabled]="salvando || fotos?.excluindo"
         (click)="cancelarFormulario()">
         Cancelar
       </button>
@@ -464,7 +472,7 @@
                 type="button"
                 title="Visualizar OS"
                 aria-label="Visualizar OS"
-                (click)="visualizarRelatorio(ordem)">
+                [disabled]="salvando || fotos?.excluindo" (click)="visualizarRelatorio(ordem)">
                 Visualizar / imprimir
               </button>
 
@@ -473,7 +481,7 @@
                 type="button"
                 title="Editar"
                 aria-label="Editar"
-                (click)="editar(ordem)">
+                [disabled]="salvando || fotos?.excluindo" (click)="editar(ordem)">
                 Editar
               </button>
 
@@ -482,7 +490,7 @@
                 type="button"
                 title="Iniciar"
                 aria-label="Iniciar"
-                (click)="iniciar(ordem.id)">
+                [disabled]="salvando || fotos?.excluindo" (click)="iniciar(ordem.id)">
                 Iniciar
               </button>
 
@@ -491,7 +499,7 @@
                 type="button"
                 title="Concluir"
                 aria-label="Concluir"
-                (click)="concluir(ordem.id)">
+                [disabled]="salvando || fotos?.excluindo" (click)="concluir(ordem.id)">
                 Concluir
               </button>
 
@@ -500,7 +508,7 @@
                 type="button"
                 title="Faturar"
                 aria-label="Faturar"
-                (click)="faturar(ordem.id)">
+                [disabled]="salvando || fotos?.excluindo" (click)="faturar(ordem.id)">
                 Faturar
               </button>
 
@@ -509,7 +517,7 @@
                 type="button"
                 title="Cancelar"
                 aria-label="Cancelar"
-                (click)="cancelar(ordem.id)">
+                [disabled]="salvando || fotos?.excluindo" (click)="cancelar(ordem.id)">
                 Cancelar
               </button>
 

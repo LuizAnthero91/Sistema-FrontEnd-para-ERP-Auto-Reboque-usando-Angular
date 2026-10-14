@@ -1,0 +1,47 @@
+<section aria-label="Fotos da ordem de serviço">
+  <h3>Fotos da OS</h3>
+  @if (!somenteLeitura) {
+    <label for="fotos-os">Selecionar fotos</label>
+    <input id="fotos-os" type="file" accept="image/jpeg,image/png,image/webp" multiple
+      [disabled]="bloqueado || enviando || excluindo || carregando || !!erroListagem || fotosRestantes === 0" (change)="selecionar($event)">
+    <p aria-live="polite">Máximo de {{ limiteFotos }} fotos por OS (salvas e pendentes).
+      @if (!carregando && !erroListagem) { Você ainda pode adicionar {{ fotosRestantes }} foto(s). }
+    </p>
+    <p>JPEG, PNG ou WebP, até 8 MB por foto. As fotos serão enviadas após salvar a OS.</p>
+  }
+  @if (erro) { <p class="alert error" role="alert">{{ erro }}</p> }
+  @if (pendentes.length) {
+    <h4>Fotos pendentes ({{ pendentes.length }})</h4>
+    <div class="fotos-grid">
+      @for (foto of pendentes; track foto.preview) {
+        <figure>
+          <img [src]="foto.preview" [alt]="foto.file.name">
+          <figcaption>{{ foto.file.name }}</figcaption>
+          <button type="button" class="btn btn-secondary" [disabled]="bloqueado || enviando" (click)="remover(foto.preview)">Remover seleção</button>
+        </figure>
+      }
+    </div>
+  }
+  @if (enviando) { <p role="status">Enviando fotos…</p> }
+  @if (carregando) { <p role="status">Carregando fotos…</p> }
+  @if (erroListagem) {
+    <p class="alert error" role="alert">Não foi possível carregar as fotos: {{ erroListagem }}</p>
+    <button type="button" class="btn btn-secondary" [disabled]="bloqueado || enviando || excluindo" (click)="carregar()">Tentar novamente</button>
+  }
+  @if (imagens.length) {
+    <h4>Fotos salvas</h4>
+    <div class="fotos-grid">
+      @for (imagem of imagens; track imagem.id) {
+        <figure>
+          <a [href]="imagem.url" target="_blank" rel="noopener noreferrer"><img [src]="imagem.url" [alt]="imagem.nomeOriginal"></a>
+          <figcaption>{{ imagem.nomeOriginal }}</figcaption>
+          @if (!somenteLeitura) {
+            <button type="button" class="btn btn-danger" [disabled]="bloqueado || enviando || excluindo || carregando" (click)="excluir(imagem)">Excluir foto</button>
+          }
+        </figure>
+      }
+    </div>
+  } @else if (ordemId && !carregando && !erroListagem) {
+    <p>Nenhuma foto salva nesta OS.</p>
+  }
+</section>
