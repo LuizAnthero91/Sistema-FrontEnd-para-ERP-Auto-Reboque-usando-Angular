@@ -30,6 +30,27 @@ export class OsImagensComponent implements OnChanges, OnDestroy {
   erro = '';
   erroListagem = '';
   readonly limiteFotos = 10;
+  private fotosCarregadas = new Set<number>();
+  private fotosComErro = new Set<number>();
+
+  get prontaParaImprimir(): boolean {
+    return !this.carregando && !this.erroListagem &&
+      this.imagens.every(imagem => this.fotosCarregadas.has(imagem.id));
+  }
+
+  get erroCarregamentoFotos(): boolean {
+    return this.fotosComErro.size > 0;
+  }
+
+  registrarCarregamento(id: number, sucesso: boolean): void {
+    if (sucesso) {
+      this.fotosCarregadas.add(id);
+      this.fotosComErro.delete(id);
+    } else {
+      this.fotosCarregadas.delete(id);
+      this.fotosComErro.add(id);
+    }
+  }
 
   get fotosRestantes(): number {
     return Math.max(0, this.limiteFotos - this.imagens.length - this.pendentes.length);
@@ -53,6 +74,9 @@ export class OsImagensComponent implements OnChanges, OnDestroy {
     if (!this.ordemId) { this.imagens = []; this.carregando = false; return; }
     this.carregando = true;
     this.erroListagem = '';
+    this.imagens = [];
+    this.fotosCarregadas.clear();
+    this.fotosComErro.clear();
     this.service.listar(this.ordemId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: imagens => {
         if (versao !== this.versao) return;

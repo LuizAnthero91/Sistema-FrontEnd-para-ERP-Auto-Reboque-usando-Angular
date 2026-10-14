@@ -1,7 +1,17 @@
 :host { display: block; margin: 20px 0; }
-.fotos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+.fotos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(160px, 100%), 1fr)); gap: 16px; }
 figure { margin: 0; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; min-width: 0; break-inside: avoid; }
 img { width: 100%; height: 160px; object-fit: contain; border-radius: 4px; }
 figcaption { overflow-wrap: anywhere; margin: 8px 0; }
 p { margin: 10px 0; }
-@media print { button, input { display: none; } .fotos-grid { grid-template-columns: repeat(3, 1fr); } }
+@media print {
+  :host { margin: 4mm 0; }
+  button, input { display: none !important; }
+  h3 { margin: 0 0 2mm; font-size: 12px; break-after: avoid; }
+  h4 { margin: 0 0 2mm; font-size: 10px; break-after: avoid; }
+  .fotos-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3mm; }
+  figure { padding: 2mm; border-radius: 2mm; break-inside: avoid; page-break-inside: avoid; }
+  a { display: block; }
+  img { display: block; width: 100%; height: 35mm; object-fit: contain; }
+  figcaption { margin: 1mm 0 0; font-size: 8px; line-height: 1.25; }
+}

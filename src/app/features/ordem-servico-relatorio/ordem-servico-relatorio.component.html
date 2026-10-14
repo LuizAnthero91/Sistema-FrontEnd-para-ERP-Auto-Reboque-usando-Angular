@@ -12,12 +12,20 @@
     <button
       class="toolbar-button primary"
       type="button"
-      [disabled]="!ordem || carregando"
+      [disabled]="!ordem || carregando || !fotos?.prontaParaImprimir"
       (click)="imprimir()">
       Imprimir / Salvar PDF
     </button>
 
   </div>
+
+  @if (ordem && !carregando && fotos && !fotos.prontaParaImprimir) {
+    <p class="mensagem no-print" role="status">
+      {{ fotos.erroListagem || fotos.erroCarregamentoFotos
+        ? 'Não foi possível preparar todas as fotos. Use a opção de tentar novamente na seção Fotos da OS.'
+        : 'Preparando fotos para impressão…' }}
+    </p>
+  }
 
   <div
     class="mensagem"

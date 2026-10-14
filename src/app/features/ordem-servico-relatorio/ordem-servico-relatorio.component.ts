@@ -7,6 +7,7 @@ import {
 import {
   Component,
   OnInit,
+  ViewChild,
   inject
 } from '@angular/core';
 
@@ -34,6 +35,7 @@ import { label } from '../../shared/options';
   styleUrl: './ordem-servico-relatorio.component.css'
 })
 export class OrdemServicoRelatorioComponent implements OnInit {
+  @ViewChild(OsImagensComponent) fotos?: OsImagensComponent;
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -103,7 +105,7 @@ export class OrdemServicoRelatorioComponent implements OnInit {
   }
 
   imprimir(): void {
-    if (!this.ordem) {
+    if (!this.ordem || this.carregando || !this.fotos?.prontaParaImprimir) {
       return;
     }
 

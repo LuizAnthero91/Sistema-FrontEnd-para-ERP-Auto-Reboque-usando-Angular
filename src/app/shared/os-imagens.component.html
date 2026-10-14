@@ -24,6 +24,10 @@
   }
   @if (enviando) { <p role="status">Enviando fotos…</p> }
   @if (carregando) { <p role="status">Carregando fotos…</p> }
+  @if (somenteLeitura && erroCarregamentoFotos) {
+    <p class="alert error" role="alert">Algumas fotos não carregaram. Tente novamente antes de imprimir.</p>
+    <button type="button" class="btn btn-secondary" (click)="carregar()">Recarregar fotos</button>
+  }
   @if (erroListagem) {
     <p class="alert error" role="alert">Não foi possível carregar as fotos: {{ erroListagem }}</p>
     <button type="button" class="btn btn-secondary" [disabled]="bloqueado || enviando || excluindo" (click)="carregar()">Tentar novamente</button>
@@ -33,7 +37,8 @@
     <div class="fotos-grid">
       @for (imagem of imagens; track imagem.id) {
         <figure>
-          <a [href]="imagem.url" target="_blank" rel="noopener noreferrer"><img [src]="imagem.url" [alt]="imagem.nomeOriginal"></a>
+          <a [href]="imagem.url" target="_blank" rel="noopener noreferrer"><img [src]="imagem.url" [alt]="imagem.nomeOriginal" loading="eager"
+            (load)="registrarCarregamento(imagem.id, true)" (error)="registrarCarregamento(imagem.id, false)"></a>
           <figcaption>{{ imagem.nomeOriginal }}</figcaption>
           @if (!somenteLeitura) {
             <button type="button" class="btn btn-danger" [disabled]="bloqueado || enviando || excluindo || carregando" (click)="excluir(imagem)">Excluir foto</button>
