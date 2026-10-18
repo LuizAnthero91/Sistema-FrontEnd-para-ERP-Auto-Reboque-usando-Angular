@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, DestroyRef, Input, OnChanges, OnDestroy, SimpleChanges, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable, catchError, concatMap, finalize, from, map, of, tap, toArray } from 'rxjs';
+import { Observable, catchError, concatMap, finalize, from, map, of, switchMap, tap, toArray } from 'rxjs';
 import { OsImagem } from '../core/models/os-imagem.model';
 import { OsImagemService } from '../core/services/os-imagem.service';
+import { ImagemCompressaoService } from '../core/services/imagem-compressao.service';
 import { errorMessage } from './form-utils';
 
 @Component({
@@ -19,6 +20,7 @@ export class OsImagensComponent implements OnChanges, OnDestroy {
   @Input() somenteLeitura = false;
   @Input() bloqueado = false;
   private readonly service = inject(OsImagemService);
+  private readonly compressao = inject(ImagemCompressaoService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
   private versao = 0;
@@ -133,10 +135,14 @@ export class OsImagensComponent implements OnChanges, OnDestroy {
       this.erro = `Não foi possível enviar as fotos. Confira as fotos salvas e mantenha no máximo ${this.limiteFotos} fotos por OS.`;
       return of(false);
     }
+    if (this.enviando || this.bloqueado || this.somenteLeitura) {
+      return of(false);
+    }
     this.enviando = true;
     this.erro = '';
     return from([...this.pendentes]).pipe(
-      concatMap(pendente => this.service.upload(ordemId, pendente.file).pipe(
+      concatMap(pendente => from(this.compressao.comprimir(pendente.file)).pipe(
+        switchMap(arquivoOtimizado => this.service.upload(ordemId, arquivoOtimizado)),
         tap(imagem => {
           this.imagens.push(imagem);
           this.descartar(pendente.preview);
@@ -145,6 +151,7 @@ export class OsImagensComponent implements OnChanges, OnDestroy {
         map(() => true),
         catchError(erro => {
           this.erro += `${pendente.file.name}: ${errorMessage(erro)} `;
+          this.cdr.markForCheck();
           return of(false);
         })
       )),
