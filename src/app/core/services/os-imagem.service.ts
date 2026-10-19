@@ -16,6 +16,10 @@ export class OsImagemService {
   upload(ordemId: number, file: File): Observable<OsImagem> {
     const body = new FormData();
     body.append('file', file);
+    console.info('[Fotos OS] Enviando POST', {
+      url: `${this.apiUrl}/${ordemId}/imagens`,
+      campo: 'file', arquivo: file.name, tipo: file.type, tamanhoBytes: file.size
+    });
     return this.http.post<OsImagem>(`${this.apiUrl}/${ordemId}/imagens`, body);
   }
 

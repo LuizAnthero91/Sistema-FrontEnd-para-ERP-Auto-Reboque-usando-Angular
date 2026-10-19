@@ -211,6 +211,14 @@ export class OrdensServicoComponent implements OnInit {
   }
 
   salvar(): void {
+    console.info('[Fotos OS] Clicou em Salvar / enviar fotos', {
+      ordemId: this.editId ?? 'nova OS',
+      fotosPendentes: this.fotos?.pendentes.length ?? 0,
+      formularioValido: this.form.valid,
+      salvando: this.salvando,
+      carregandoFotos: this.fotos?.carregando ?? false,
+      excluindoFoto: this.fotos?.excluindo ?? false
+    });
     if (this.salvando || this.fotos?.excluindo || this.fotos?.carregando) return;
     this.erro = '';
     this.sucesso = '';

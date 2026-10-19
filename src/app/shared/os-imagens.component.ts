@@ -131,6 +131,7 @@ export class OsImagensComponent implements OnChanges, OnDestroy {
   }
 
   enviar(ordemId: number): Observable<boolean> {
+    console.info('[Fotos OS] Preparando envio', { ordemId, quantidade: this.pendentes.length });
     if (this.pendentes.length && (this.carregando || this.erroListagem || this.imagens.length + this.pendentes.length > this.limiteFotos)) {
       this.erro = `Não foi possível enviar as fotos. Confira as fotos salvas e mantenha no máximo ${this.limiteFotos} fotos por OS.`;
       return of(false);
@@ -146,12 +147,17 @@ export class OsImagensComponent implements OnChanges, OnDestroy {
       concatMap(pendente => defer(() => this.compressao.comprimir(pendente.file)).pipe(
         switchMap(arquivoOtimizado => this.service.upload(ordemId, arquivoOtimizado)),
         tap(imagem => {
+          console.info('[Fotos OS] Upload OK', { ordemId, imagemId: imagem.id });
           this.imagens.push(imagem);
           this.descartar(pendente.preview);
           this.cdr.markForCheck();
         }),
         map(() => true),
         catchError(erro => {
+          console.error('[Fotos OS] Falha ao preparar ou enviar foto', {
+            ordemId, arquivo: pendente.file.name, status: erro?.status,
+            mensagem: errorMessage(erro)
+          });
           this.erro += `${pendente.file.name}: ${errorMessage(erro)} `;
           this.cdr.markForCheck();
           return of(false);
