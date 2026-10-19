@@ -251,7 +251,7 @@ export class OrdensServicoComponent implements OnInit {
             this.mostrarForm = false;
             this.editId = undefined;
           } else {
-            this.sucesso = `OS ${ordem.numeroOs} salva. H? fotos pendentes; clique em Salvar / enviar fotos para tentar novamente.`;
+            this.sucesso = `OS ${ordem.numeroOs} salva. Há fotos pendentes; clique em Salvar / enviar fotos para tentar novamente.`;
           }
           this.cdr.markForCheck();
         };

@@ -24,9 +24,9 @@
   }
   @if (enviando) { <p role="status">Enviando fotos…</p> }
   @if (carregando) { <p role="status">Carregando fotos…</p> }
-  @if (somenteLeitura && erroCarregamentoFotos) {
-    <p class="alert error" role="alert">Algumas fotos não carregaram. Tente novamente antes de imprimir.</p>
-    <button type="button" class="btn btn-secondary" (click)="carregar()">Recarregar fotos</button>
+  @if (erroCarregamentoFotos) {
+    <p class="alert error" role="alert">Algumas fotos não carregaram ou o acesso temporário expirou. Recarregue as fotos para tentar novamente.</p>
+    <button type="button" class="btn btn-secondary" [disabled]="bloqueado || enviando || excluindo || carregando" (click)="carregar()">Recarregar fotos</button>
   }
   @if (erroListagem) {
     <p class="alert error" role="alert">Não foi possível carregar as fotos: {{ erroListagem }}</p>

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, DestroyRef, Input, OnChanges, OnDestroy, SimpleChanges, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable, catchError, concatMap, finalize, from, map, of, switchMap, tap, toArray } from 'rxjs';
+import { Observable, catchError, concatMap, defer, finalize, from, map, of, switchMap, tap, toArray } from 'rxjs';
 import { OsImagem } from '../core/models/os-imagem.model';
 import { OsImagemService } from '../core/services/os-imagem.service';
 import { ImagemCompressaoService } from '../core/services/imagem-compressao.service';
@@ -135,13 +135,15 @@ export class OsImagensComponent implements OnChanges, OnDestroy {
       this.erro = `Não foi possível enviar as fotos. Confira as fotos salvas e mantenha no máximo ${this.limiteFotos} fotos por OS.`;
       return of(false);
     }
-    if (this.enviando || this.bloqueado || this.somenteLeitura) {
+    // O formulário mantém bloqueado=true durante o salvamento e chama enviar ao salvar a OS.
+    // Esse bloqueio impede edições na tela, mas deve permitir o upload iniciado pelo formulário.
+    if (this.enviando || this.excluindo || this.somenteLeitura) {
       return of(false);
     }
     this.enviando = true;
     this.erro = '';
     return from([...this.pendentes]).pipe(
-      concatMap(pendente => from(this.compressao.comprimir(pendente.file)).pipe(
+      concatMap(pendente => defer(() => this.compressao.comprimir(pendente.file)).pipe(
         switchMap(arquivoOtimizado => this.service.upload(ordemId, arquivoOtimizado)),
         tap(imagem => {
           this.imagens.push(imagem);
